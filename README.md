@@ -10,8 +10,7 @@ I'm a passionate software engineer and Unity developer with a strong background 
 - 📫 How to reach me: [Email](mailto:kushnir.victor@gmail.com)
 - <a href="https://www.linkedin.com/in/victoku1/" target="_blank"><img src="https://img.shields.io/badge/LinkedIn-%230077B5.svg?&style=flat-square&logo=linkedin&logoColor=white" alt="LinkedIn"></a>
 
-## GitHub Stats
-<img src="https://github-readme-stats.vercel.app/api/top-langs?username=VictoKu1&show_icons=true&locale=en&layout=compact&theme=chartreuse-dark" alt="ovi" />
+![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=VictoKu1&layout=compact)
 
 ## Skills
 - **Programming Languages**: Python, Java, C#, C, C++, JavaScript, Shell
