@@ -10,13 +10,17 @@ I'm a passionate software engineer and Unity developer with a strong background 
 - 📫 How to reach me: [Email](mailto:kushnir.victor@gmail.com)
 - <a href="https://www.linkedin.com/in/victoku1/" target="_blank"><img src="https://img.shields.io/badge/LinkedIn-%230077B5.svg?&style=flat-square&logo=linkedin&logoColor=white" alt="LinkedIn"></a>
 
+## GitHub Stats
+![Victor's GitHub stats](https://github-readme-stats.vercel.app/api?username=VictoKu1&show_icons=true&theme=radical)
+<img src="https://github-readme-stats.vercel.app/api/top-langs?username=VictoKu1&show_icons=true&locale=en&layout=compact&theme=chartreuse-dark" alt="ovi" />
+
 ## Skills
 - **Programming Languages**: Python, Java, C#, C, C++, JavaScript, Shell
 - **Tools & Technologies**: Docker, Linux, Git, Unity
 - **Core Competencies**: Algorithms, Data Structures, Software Development, Video Games Development, Game Design
 
 ## Languages
-- Hebrew
+- Hebrew 
 - Russian
 - English
 
@@ -38,11 +42,3 @@ I'm a passionate software engineer and Unity developer with a strong background 
 - **Evil Twin Attack and Defense in Python**: [GitHub](https://github.com/Wireless-Network-Security/Evil-Twin)
 - **Python Pip Packages Update Script in Linux**: [GitHub](https://github.com/VictoKu1/PythonPipPackagesUpdateScript)
 - **Many Other Projects.....**: [GitHub](https://github.com/VictoKu1?tab=repositories)
-
-## GitHub Stats
-![Victor's GitHub stats](https://github-readme-stats.vercel.app/api?username=VictoKu1&show_icons=true&theme=radical)
-
-## Connect with Me
-- [LinkedIn](your-linkedin-link)
-- [Twitter](your-twitter-link)
-- [Personal Website](your-website-link)
