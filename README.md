@@ -1,20 +1,19 @@
-# Hi there 👋, I'm Victor Kushnir
+# Hi there 👋, I'm Victor
 
 ## About Me
-I'm a passionate software engineer and Unity developer with a strong background in computer science and mathematics. I have a keen interest in algorithms, data structures, and game development. I enjoy working on various projects, from creating video games to developing complex algorithms and systems.
+I'm a passionate software engineer and Unity developer with a strong background in computer science and mathematics. I have a keen interest in algorithms, data structures, and game development. I enjoy working on various projects, from creating video games to developing complex algorithms and systems, AI, Machine Learning, Web Development and Cyber Security.
 
 - 🎓 BSc in Computer Science and Mathematics from Ariel University (2019 - 2023)
 - 💼 Currently working on various exciting projects in software development and game design
 - 🌱 Always eager to learn new technologies and improve my skills
 - 💬 Ask me about software development, game design, and algorithms
-- 📫 How to reach me: [Email](mailto:your-email@example.com)
-- 😄 Pronouns: He/Him
+- 📫 How to reach me: [Email](mailto:kushnir.victor@gmail.com)
+- <a href="https://www.linkedin.com/in/victoku1/" target="_blank"><img src="https://img.shields.io/badge/LinkedIn-%230077B5.svg?&style=flat-square&logo=linkedin&logoColor=white" alt="LinkedIn"></a>
 
 ## Skills
-- **Programming Languages**: Python, Java, C#, C, C++
+- **Programming Languages**: Python, Java, C#, C, C++, JavaScript, Shell
 - **Tools & Technologies**: Docker, Linux, Git, Unity
 - **Core Competencies**: Algorithms, Data Structures, Software Development, Video Games Development, Game Design
-- **Soft Skills**: Collaboration, Problem-solving, Teaching, Workshop organization
 
 ## Languages
 - Hebrew
@@ -35,8 +34,8 @@ I'm a passionate software engineer and Unity developer with a strong background 
 
 ### Other Projects
 - **Governmental Coalition Calculation System**: [GitHub](https://github.com/FairCoalitionCasesDistributionProject)
-- **Evil Twin Attack and Defense in Python**: [GitHub](https://github.com/Wireless-Network-Security/Evil-Twin)
 - **MINIMAP Android App**: A location-based social security network. [GitHub](https://github.com/V-P-A-AppDev/MINIMAP)
+- **Evil Twin Attack and Defense in Python**: [GitHub](https://github.com/Wireless-Network-Security/Evil-Twin)
 - **Python Pip Packages Update Script in Linux**: [GitHub](https://github.com/VictoKu1/PythonPipPackagesUpdateScript)
 - **Many Other Projects.....**: [GitHub](https://github.com/VictoKu1?tab=repositories)
 
