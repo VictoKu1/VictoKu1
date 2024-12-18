@@ -13,7 +13,7 @@
 </div>
 
 ## About Me
-I'm a passionate software engineer and Unity developer with a strong background in computer science and mathematics. I have a keen interest in algorithms, data structures, and game development. I enjoy working on various projects, from creating video games to developing complex algorithms and systems, AI, Machine Learning, Web Development and Cyber Security.
+I'm a passionate Software Engineer and Unity Developer with a strong background in Computer Science and Mathematics. I have a keen interest in Algorithms, Data Structures, and Game Development. I enjoy working on various projects, from creating Video Games to Developing complex Algorithms and Systems, AI, Machine Learning, Web Development and Cyber Security.
 
 - 🎓 BSc in Computer Science and Mathematics from Ariel University (2019 - 2023)
 - 💼 Currently working on various exciting projects in software development and game design
