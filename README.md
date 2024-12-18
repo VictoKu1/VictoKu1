@@ -30,12 +30,12 @@ I'm a passionate software engineer and Unity developer with a strong background 
 
 ## Projects
 ### Major Contributions
-- **NetworkX Library Contribution**: Implemented Coalition Formation in Multi-agent Systems (Pull Request #6364). [Website](https://victoku1.pythonanywhere.com)
+- **NetworkX Library Contribution**: Implemented Coalition Formation in Multi-agent Systems [Pull Request #6364](https://github.com/networkx/networkx/pull/6364)
 - **API Traffic Security Classification**: Conducted research for Ariel Cyber Innovation Center Cisco Competition. [GitHub](https://github.com/VictoKu1/API_Security_Research)
 - **SCADA Cyber Attacks Detection**: Researched industrial power control system security. [GitHub](https://github.com/VictoKu1/IndustrialControlSystemCyberAttackDetectingCourse)
 
 ### Game Development
-- **SolveIt**: A casual puzzle mobile game (Under Development). [Public Testing](https://victoku1.itch.io/solveit)
+- **SolveIt**: A casual puzzle mobile game (Under Development). [Mobile Public Testing](https://victoku1.itch.io/solveit)
 - **Dimensional**: A Unity WebGL video game. [Play Now](https://victoku1.itch.io/mazesimulation1)
 - **Jumper**: A Unity WebGL video game. [Play Now](https://victoku1.itch.io/jumper)
 
