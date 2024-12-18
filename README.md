@@ -36,6 +36,7 @@ I'm a passionate software engineer and Unity developer with a strong background 
 
 ### Game Development
 - **SolveIt**: A casual puzzle mobile game (Under Development). [Mobile Public Testing](https://victoku1.itch.io/solveit)
+- **Cuble**: WebGL and Mobile puzzle game. [Play Now](https://victoku1.itch.io/cuble)
 - **Dimensional**: A Unity WebGL video game. [Play Now](https://victoku1.itch.io/mazesimulation1)
 - **Jumper**: A Unity WebGL video game. [Play Now](https://victoku1.itch.io/jumper)
 
@@ -54,7 +55,6 @@ I'm a passionate software engineer and Unity developer with a strong background 
 
 ## Contact me 
 [![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:victoku1.info@gmail.com)
-
 
 
 
