@@ -47,13 +47,13 @@ I'm a passionate software engineer and Unity developer with a strong background 
 - **Many Other Projects.....**: [GitHub](https://github.com/VictoKu1?tab=repositories)
 
 ## Languages
+- English
 - Hebrew 
 - Russian
-- English
+
 
 ## Contact me 
 [![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:victoku1.info@gmail.com)
-
 
 
 
