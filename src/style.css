@@ -1,0 +1,334 @@
+/* General Styles */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    scroll-behavior: smooth;
+    background-color: #000000;
+    color: white;
+}
+
+h1, h2 {
+    margin: 0 0 20px;
+}
+
+p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+}
+
+/* Navigation Bar */
+nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    z-index: 10;
+    padding: 10px 20px;
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 5%;
+}
+
+nav ul li {
+    margin: 0 15px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+nav ul li a:hover {
+    color: #00d4ff;
+    border-bottom: 2px solid #00d4ff;
+    transition: all 0.3s ease-in-out;
+}
+
+nav ul li a.active {
+    color: #00d4ff; /* Highlighted color */
+    border-bottom: 3px solid #00d4ff; /* Underline for visual indication */
+    font-weight: bold; /* Bold font */
+    transition: all 0.3s ease-in-out;
+}
+
+/* Sections */
+section {
+    padding: 100px 20px;
+    text-align: center;
+}
+
+#home {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.intro {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.intro h1 {
+    font-size: 3rem;
+    font-weight: 700;
+}
+
+.intro p {
+    font-size: 1.5rem;
+    color: #00d4ff;
+}
+
+#particleCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: all; /* Ensure the canvas can capture mouse events */
+}
+
+/* About Section */
+#about {
+    background-color: #000000;
+    color: white;
+    text-align: center; /* Center-align the section title */
+    padding: 50px 10%;
+}
+
+#about h1 {
+    margin-bottom: 40px; /* Space between header and content */
+    font-size: 2.5rem;
+    color: #00d4ff;
+}
+
+/* About Container */
+.about-container {
+    display: flex;
+    flex-direction: row; /* Ensures photo is on the left and icons are on the right */
+    justify-content: space-between;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+/* Left: Photo and Description */
+.about-photo {
+    order: 1; /* Ensures photo and description are on the left */
+    flex: 1;
+    text-align: center; /* Center-align the image and text */
+}
+
+.about-photo img {
+    width: 256px;
+    height: 256px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 20px;
+    border: 3px solid #00d4ff;
+}
+
+.about-photo p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: white;
+    text-align: justify; /* Optional: Justify the paragraph text */
+}
+
+/* Right: Icons Grid */
+.about-icons {
+    order: 2; /* Ensures icons are on the right */
+    flex: 1;
+    text-align: center;
+}
+
+.about-icons h3 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: #00d4ff;
+}
+
+.icon-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Adjust grid for 3 columns */
+    gap: 15px;
+}
+
+.icon-grid i, .icon-grid span {
+    font-size: 2.5rem;
+    color: white;
+    transition: color 0.3s ease;
+}
+
+.icon-grid i:hover, .icon-grid span:hover {
+    color: #00d4ff;
+}
+
+/* Projects Section */
+#projects {
+    background-color: #000000; /* Matches the site theme */
+    color: white;
+    padding: 50px 10%;
+    text-align: center;
+}
+
+#projects h1 {
+    margin-bottom: 40px; /* Space between section title and content */
+    font-size: 2.5rem;
+    color: #00d4ff;
+}
+
+/* Project Categories */
+.project-category {
+    margin-bottom: 40px; /* Space between categories */
+    text-align: left; /* Align text within categories to the left */
+}
+
+.project-category h2 {
+    font-size: 1.8rem;
+    color: #00d4ff;
+    margin-bottom: 20px;
+}
+
+/* Project List */
+.project-category ul {
+    list-style-type: none; /* Remove default list styling */
+    padding: 0;
+}
+
+.project-category li {
+    margin-bottom: 15px;
+    line-height: 1.6;
+    font-size: 1.2rem;
+}
+
+.project-category a {
+    color: #00d4ff; /* Link color */
+    text-decoration: none; /* Remove underline */
+    font-weight: bold;
+    transition: color 0.3s ease-in-out, text-decoration 0.3s ease-in-out;
+}
+
+.project-category a:hover {
+    text-decoration: underline; /* Add underline on hover */
+}
+
+/* Contact Section */
+#contact {
+    background-color: #252525;
+    color: white;
+}
+
+#contact h1 {
+    margin-bottom: 40px;
+    font-size: 2.5rem;
+    color: #00d4ff;
+}
+
+/* Contact Icons */
+.contact-icons {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.contact-icons a {
+    margin: 0 15px;
+    font-size: 2rem;
+    color: white;
+    transition: color 0.3s ease;
+}
+
+.contact-icons a:hover {
+    color: #00d4ff;
+}
+
+/* Scroll Button */
+.scroll-button {
+    margin-top: 20px;
+    padding: 20px 40px; /* Larger button */
+    font-size: 1.5rem; /* Bigger font */
+    font-weight: bold;
+    color: #00d4ff;
+    background-color: transparent; /* Transparent button */
+    border: 2px solid #00d4ff; /* Border to make it stand out */
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Hover Effect: Pulsating */
+.scroll-button:hover {
+    animation: pulsate 1.5s infinite; /* Pulsating animation */
+    box-shadow: 0 0 20px #00d4ff; /* Glow effect */
+    transform: scale(1.1); /* Slightly enlarge */
+}
+
+.scroll-button:active {
+    transform: scale(1.05); /* Slightly shrink when clicked */
+}
+
+/* Pulsating Animation */
+@keyframes pulsate {
+    0% {
+        box-shadow: 0 0 10px #00d4ff;
+    }
+    50% {
+        box-shadow: 0 0 20px #00d4ff;
+    }
+    100% {
+        box-shadow: 0 0 10px #00d4ff;
+    }
+}
+
+/* Education Section */
+#education {
+    background-color: #000000; /* Match the site theme */
+    color: white;
+    padding: 50px 10%;
+    text-align: center;
+}
+
+#education h1 {
+    font-size: 2.5rem;
+    color: #00d4ff;
+    margin-bottom: 40px;
+}
+
+.education-container {
+    text-align: left; /* Align content to the left for readability */
+    max-width: 800px;
+    margin: 0 auto; /* Center the container */
+}
+
+.education-item {
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #252525; /* Slightly lighter background for contrast */
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.education-item h2 {
+    font-size: 1.8rem;
+    color: #00d4ff;
+    margin-bottom: 10px;
+}
+
+.education-item p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
