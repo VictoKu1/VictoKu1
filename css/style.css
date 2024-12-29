@@ -328,8 +328,19 @@ section {
 
 .iframe-container {
     display: flex;
+    flex-wrap: wrap;
+    /* Allow the games to wrap to the next row on small screens */
     justify-content: center;
+    /* Center the iframes horizontally */
+    gap: 10px;
+    /* Add spacing between the iframes */
+}
 
+.iframe-container iframe {
+    max-width: 100%;
+    /* Ensure the iframe doesn't overflow */
+    height: auto;
+    /* Adjust the height proportionally */
 }
 
 .project-category h2 {
@@ -536,3 +547,32 @@ section {
         border-radius: 8px;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
