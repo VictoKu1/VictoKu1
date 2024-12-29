@@ -19,7 +19,7 @@ I'm a passionate Software Engineer and Unity Developer with a strong background 
 - 💼 Currently working on various exciting projects in software development and game design
 - 🌱 Always eager to learn new technologies and improve my skills
 - 💬 Ask me about software development, game design, and algorithms
-- [Personal Website](https://victoku1.github.io/VictoKu1/) </br>
+- [Personal Website](https://victoku1.netlify.app/) </br>
 - <a href="https://www.linkedin.com/in/victoku1/" target="_blank"><img src="https://img.shields.io/badge/LinkedIn-%230077B5.svg?&style=flat-square&logo=linkedin&logoColor=white" alt="LinkedIn"></a>
 
 ![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=VictoKu1&layout=compact)
