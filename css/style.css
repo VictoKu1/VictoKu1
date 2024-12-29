@@ -1,0 +1,538 @@
+/* -----------------------------------
+   GLOBAL STYLES
+----------------------------------- */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    scroll-behavior: smooth;
+    background-color: #000000;
+    /* Black background */
+    color: white;
+    padding: 0;
+    overflow-x: hidden;
+    /* Prevent horizontal overflow */
+}
+
+html {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    /* Prevent horizontal overflow */
+}
+
+section {
+    margin: 0;
+    padding: 0;
+}
+
+h1,
+h2 {
+    margin: 0 0 20px;
+}
+
+p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+}
+
+/* -----------------------------------
+   NAVIGATION BAR
+----------------------------------- */
+nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.95);
+    color: white;
+    z-index: 10;
+    /* Ensure nav sits above other elements */
+    padding: 10px 20px;
+}
+
+/* 
+   NAV CONTAINER 
+   - Holds hamburger and the UL 
+   - We'll align them to the right on desktop 
+*/
+.nav-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    /* Right-aligned for desktop */
+    position: relative;
+    /* Helps position the UL absolutely on mobile */
+}
+
+/* Normal desktop menu (UL) */
+.nav-container ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    /* Horizontal row on desktop */
+    justify-content: flex-end;
+    padding-right: 5%;
+}
+
+
+.nav-container ul li {
+    margin: 0 15px;
+}
+
+.nav-container ul li a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    transition: all 0.3s ease-in-out;
+}
+
+.nav-container ul li a:hover {
+    color: #00d4ff;
+    border-bottom: 2px solid #00d4ff;
+}
+
+.nav-container ul li a.active {
+    color: #00d4ff;
+    /* Highlighted color */
+    border-bottom: 3px solid #00d4ff;
+    /* Underline for visual indication */
+    font-weight: bold;
+}
+
+/* -----------------------------------
+   HAMBURGER ICON
+----------------------------------- */
+.hamburger {
+    display: none;
+    /* Hidden on desktop */
+    flex-direction: column;
+    cursor: pointer;
+    /* Add a little spacing from the right edge */
+    margin-right: 10px;
+    transition: all 0.4s ease;
+    position: relative;
+    z-index: 9999;
+    /* Ensure it’s on top of the nav */
+}
+
+.hamburger span {
+    width: 25px;
+    height: 3px;
+    background: #fff;
+    margin: 4px 0;
+    transition: transform 0.4s ease, opacity 0.4s ease, background 0.4s ease;
+}
+
+/* When hamburger is "open", transform into an X */
+.hamburger.open span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.hamburger.open span:nth-child(2) {
+    opacity: 0;
+    /* Middle bar disappears */
+}
+
+.hamburger.open span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -8px);
+}
+
+/* -----------------------------------
+   SECTIONS
+----------------------------------- */
+section {
+    padding: 100px 20px;
+    text-align: center;
+}
+
+/* HOME SECTION */
+#home {
+    position: relative;
+    height: 100vh;
+    /* Full viewport height */
+    overflow: hidden;
+    /* Prevent overflow of the canvas */
+}
+
+#home .intro {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 1;
+    /* Ensure it appears above the canvas */
+}
+
+.intro {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.intro h1 {
+    font-size: 3rem;
+    font-weight: 700;
+}
+
+.intro p {
+    font-size: 1.5rem;
+    color: #00d4ff;
+}
+
+#particleCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    /* Ensure the canvas stays behind other content */
+}
+
+/* ABOUT SECTION */
+#about {
+    margin: 0;
+    padding: 50px 10%;
+    /* Adjust as needed */
+}
+
+
+#about h1 {
+    margin-bottom: 40px;
+    font-size: 2.5rem;
+    color: #00d4ff;
+}
+
+.about-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.about-photo {
+    order: 1;
+    flex: 1;
+    text-align: center;
+}
+
+.about-photo img {
+    width: 256px;
+    height: 256px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 20px;
+    border: 3px solid #00d4ff;
+}
+
+.about-photo p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: white;
+    text-align: justify;
+}
+
+.about-icons {
+    order: 2;
+    flex: 1;
+    text-align: center;
+}
+
+.about-icons h3 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: #00d4ff;
+}
+
+.icon-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.icon-grid i,
+.icon-grid span {
+    font-size: 2.5rem;
+    color: white;
+    transition: color 0.3s ease;
+}
+
+.icon-grid i:hover,
+.icon-grid span:hover {
+    color: #00d4ff;
+}
+
+/* EDUCATION SECTION */
+#education {
+    background-color: #000000;
+    color: white;
+    padding: 50px 10%;
+    text-align: center;
+}
+
+#education h1 {
+    font-size: 2.5rem;
+    color: #00d4ff;
+    margin-bottom: 40px;
+}
+
+.education-container {
+    text-align: left;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.education-item {
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #252525;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.education-item h2 {
+    font-size: 1.8rem;
+    color: #00d4ff;
+    margin-bottom: 10px;
+}
+
+.education-item p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+/* PROJECTS SECTION */
+#projects {
+    background-color: #000000;
+    color: white;
+    padding: 50px 10%;
+    text-align: center;
+}
+
+#projects h1 {
+    margin-bottom: 40px;
+    font-size: 2.5rem;
+    color: #00d4ff;
+}
+
+.project-category {
+    margin-bottom: 40px;
+    text-align: left;
+}
+
+.iframe-container {
+    display: flex;
+    justify-content: center;
+
+}
+
+.project-category h2 {
+    font-size: 1.8rem;
+    color: #00d4ff;
+    margin-bottom: 20px;
+}
+
+.project-category ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.project-category li {
+    margin-bottom: 15px;
+    line-height: 1.6;
+    font-size: 1.2rem;
+}
+
+.project-category a {
+    color: #00d4ff;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease-in-out, text-decoration 0.3s ease-in-out;
+}
+
+.project-category a:hover {
+    text-decoration: underline;
+}
+
+/* CONTACT SECTION */
+#contact {
+    background-color: #252525;
+    color: white;
+}
+
+#contact h1 {
+    margin-bottom: 40px;
+    font-size: 2.5rem;
+    color: #00d4ff;
+}
+
+#contact h5 {
+    font-size: 1.2rem;
+    margin-top: -10px;
+}
+
+.contact-icons {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.contact-icons a {
+    margin: 0 15px;
+    font-size: 2rem;
+    color: white;
+    transition: color 0.3s ease;
+}
+
+.contact-icons a:hover {
+    color: #00d4ff;
+}
+
+/* SCROLL BUTTON */
+.scroll-button {
+    margin-top: 20px;
+    padding: 20px 40px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #00d4ff;
+    background-color: transparent;
+    border: 2px solid #00d4ff;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.scroll-button:hover {
+    animation: pulsate 1.5s infinite;
+    box-shadow: 0 0 20px #00d4ff;
+    transform: scale(1.1);
+}
+
+.scroll-button:active {
+    transform: scale(1.05);
+}
+
+@keyframes pulsate {
+    0% {
+        box-shadow: 0 0 10px #00d4ff;
+    }
+
+    50% {
+        box-shadow: 0 0 20px #00d4ff;
+    }
+
+    100% {
+        box-shadow: 0 0 10px #00d4ff;
+    }
+}
+
+/* -----------------------------------
+   MEDIA QUERIES FOR RESPONSIVENESS
+----------------------------------- */
+@media (max-width: 768px) {
+
+    /* Show the hamburger on mobile */
+    .hamburger {
+        display: flex;
+    }
+
+    /* UL: slide from the top on mobile */
+    .nav-container ul {
+        position: absolute;
+        top: 60px;
+        /* Just below the fixed nav bar */
+        left: 0;
+        width: 100%;
+        /* Full width menu */
+        background-color: rgba(0, 0, 0, 0.95);
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        margin: 0;
+        padding: 20px 0;
+
+        /* Start hidden above top edge.
+           Also hide pointer events & fade it out. */
+        transform: translateY(-100%);
+        pointer-events: none;
+        opacity: 0;
+        transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
+    }
+
+    /* When toggled 'active', the menu slides down and becomes clickable */
+    .nav-container ul.active {
+        transform: translateY(0);
+        pointer-events: auto;
+        opacity: 1;
+    }
+
+    .nav-container ul li {
+        margin: 15px 0;
+    }
+
+    /* ABOUT: stack vertically */
+    .about-container {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .about-photo img {
+        max-width: 100%;
+        height: auto;
+        margin-bottom: 10px;
+    }
+
+    .about-icons {
+        margin-top: 20px;
+    }
+
+    /* EDUCATION: reduce padding/margin */
+    #education {
+        padding: 40px 5%;
+    }
+
+    .education-container {
+        padding: 0 20px;
+    }
+
+    .education-item {
+        padding: 10px;
+        margin-bottom: 20px;
+    }
+
+    /* PROJECTS: reduce padding/margin */
+    #projects {
+        padding: 40px 5%;
+    }
+
+    .project-category {
+        margin-bottom: 30px;
+    }
+
+    .project-category h2 {
+        margin-bottom: 10px;
+    }
+
+    /* CONTACT: adjust heading size */
+    #contact h1 {
+        font-size: 2rem;
+    }
+
+    .contact-icons a {
+        margin: 0 10px;
+    }
+
+    /* SCROLL BUTTON: smaller on mobile */
+    .scroll-button {
+        padding: 15px 30px;
+        font-size: 1.2rem;
+        border-radius: 8px;
+    }
+}

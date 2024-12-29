@@ -1,15 +1,24 @@
 const canvas = document.getElementById('particleCanvas');
 const ctx = canvas.getContext('2d');
 
+// Mouse and touch input
+const mouse = { x: null, y: null, radius: 150 };
+
+// Resize canvas with proper scaling
 function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    const homeSection = document.getElementById('home'); // Get the home section
+    const rect = homeSection.getBoundingClientRect();
+
+    const scale = window.devicePixelRatio || 1; // Handle high-DPI screens
+    canvas.width = rect.width * scale;
+    canvas.height = rect.height * scale;
+
+    canvas.style.width = `${rect.width}px`;
+    canvas.style.height = `${rect.height}px`;
+
+    ctx.scale(scale, scale);
 }
 
-resizeCanvas();
-
-const particles = [];
-const mouse = { x: null, y: null, radius: 150 };
 
 // Generate particles
 class Particle {
@@ -24,7 +33,7 @@ class Particle {
     draw(highlighted = false) {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fillStyle = highlighted ? '#ffffff' : 'rgba(0, 170, 255, 0.2)'; // Highlight or dim
+        ctx.fillStyle = highlighted ? '#ffffff' : 'rgba(0, 170, 255, 0.5)'; // Highlight or dim
         ctx.fill();
     }
 
@@ -39,9 +48,10 @@ class Particle {
 }
 
 // Initialize particles
+const particles = [];
 function initParticles() {
     particles.length = 0;
-    const particleCount = 250;
+    const particleCount = 265;
     for (let i = 0; i < particleCount; i++) {
         const size = Math.random() * 3 + 1;
         const x = Math.random() * canvas.width;
@@ -69,8 +79,8 @@ function connectParticles(highlightedParticles) {
 
             if (distSq < maxDistanceSquared) {
                 ctx.strokeStyle = isHighlighted
-                    ? `rgba(0, 170, 255, 0.2)` // Full opacity for highlighted
-                    : `rgba(45,45,45, 0.1)`; // Dim for others
+                    ? `rgba(0, 170, 255, 0.3)` // Highlighted
+                    : `rgba(0, 170, 255, 0.1)`; // Dimmed
 
                 ctx.beginPath();
                 ctx.moveTo(particles[a].x, particles[a].y);
@@ -140,16 +150,21 @@ function animate() {
     requestAnimationFrame(animate);
 }
 
-// Event listeners
-window.addEventListener('resize', () => {
-    resizeCanvas();
-    initParticles();
+// Mouse and touch event listeners
+canvas.addEventListener('mousemove', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    mouse.x = (e.clientX - rect.left) * scaleX;
+    mouse.y = (e.clientY - rect.top) * scaleY;
 });
 
-canvas.addEventListener('mousemove', e => {
-    const rect = canvas.getBoundingClientRect();
-    mouse.x = e.clientX - rect.left;
-    mouse.y = e.clientY - rect.top;
+canvas.addEventListener('touchstart', handleTouch);
+canvas.addEventListener('touchmove', handleTouch);
+canvas.addEventListener('touchend', () => {
+    mouse.x = null;
+    mouse.y = null;
 });
 
 canvas.addEventListener('mouseout', () => {
@@ -157,6 +172,23 @@ canvas.addEventListener('mouseout', () => {
     mouse.y = null;
 });
 
-// Initialize particles and animation
+function handleTouch(e) {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const touch = e.touches[0]; // First touch point
+
+    mouse.x = (touch.clientX - rect.left) * scaleX;
+    mouse.y = (touch.clientY - rect.top) * scaleY;
+}
+
+// Initialize canvas and particles
+window.addEventListener('resize', () => {
+    resizeCanvas();
+    initParticles();
+});
+
+resizeCanvas();
 initParticles();
 animate();
+

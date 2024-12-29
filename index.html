@@ -5,7 +5,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Victor Kushnir - Software Engineer & Game Developer</title>
-    <link rel="stylesheet" href="src/style.css">
+    <meta name="description"
+        content="Victor Kushnir's portfolio - Software Engineer & Game Developer specializing in Python, Java, Unity, and more.">
+    <meta name="author" content="Victor Kushnir">
+    <meta name="keywords" content="Victor Kushnir, Portfolio, Software Engineer, Game Developer, Python, Java, Unity">
+    <meta property="og:title" content="Victor Kushnir - Software Engineer & Game Developer">
+    <meta property="og:description" content="Showcasing Victor Kushnir's projects, skills, and contact information.">
+    <meta property="og:image" content="media/p.jpg">
+    <meta property="og:url" content="https://victoku1.github.io/VictoKu1/">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="media/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css">
 
@@ -15,14 +25,28 @@
 
 <body>
     <nav>
-        <ul>
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#education">Education</a></li>
-            <li><a href="#projects">Projects</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
+        <div class="nav-container">
+            <div class="hamburger" onclick="toggleMenu()">
+                <!-- ONLY the 3 bars (span elements). No extra text! -->
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <ul id="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#education">Education</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
     </nav>
+
+
+
+
+
 
 
     <!-- Home Section -->
@@ -115,25 +139,25 @@
 
         <!-- Game Development -->
         <div class="project-category">
-            <h2>Game Development</h2>
-            <ul>
-                <li>
-                    <strong>SolveIt:</strong> A casual puzzle mobile game (Under Development).
-                    <a href="https://victoku1.itch.io/solveit" target="_blank">[Mobile Public Testing]</a>
-                </li>
-                <li>
-                    <strong>Cuble:</strong> WebGL and Mobile puzzle game.
-                    <a href="https://victoku1.itch.io/cuble" target="_blank">[Play Now]</a>
-                </li>
-                <li>
-                    <strong>Dimensional:</strong> A Unity WebGL video game.
-                    <a href="https://victoku1.itch.io/mazesimulation1" target="_blank">[Play Now]</a>
-                </li>
-                <li>
-                    <strong>Jumper:</strong> A Unity WebGL video game.
-                    <a href="https://victoku1.itch.io/jumper" target="_blank">[Play Now]</a>
-                </li>
-            </ul>
+            <h2>Game Development (Personal Favorites)</h2>
+            <div class="iframe-container">
+                <iframe frameborder="0"
+                    src="https://itch.io/embed/2863698?border_width=0&amp;bg_color=000000&amp;border_color=000000"
+                    width="206" height="165"><a href="https://victoku1.itch.io/solveit">SolveIt by VictoKu1</a></iframe>
+
+                <iframe frameborder="0"
+                    src="https://itch.io/embed/2891933?border_width=0&amp;bg_color=000000&amp;border_color=000000"
+                    width="206" height="165"><a href="https://victoku1.itch.io/cuble">Cuble by VictoKu1</a></iframe>
+
+                <iframe frameborder="0"
+                    src="https://itch.io/embed/1300208?border_width=0&amp;bg_color=000000&amp;border_color=000000"
+                    width="206" height="165"><a href="https://victoku1.itch.io/mazesimulation1">Dimensional by
+                        VictoKu1</a></iframe>
+
+                <iframe frameborder="0"
+                    src="https://itch.io/embed/1279655?border_width=0&amp;bg_color=000000&amp;border_color=000000"
+                    width="206" height="165"><a href="https://victoku1.itch.io/jumper">Jumper by VictoKu1</a></iframe>
+            </div>
         </div>
 
         <!-- Other Projects -->
@@ -182,8 +206,39 @@
         </div>
     </section>
 
-    <script src="src/particles.js"></script>
-    <script src="src/menuHighlight.js"></script>
+    <script src="js/particles.js"></script>
+    <script src="js/menuHighlight.js"></script>
 </body>
 
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
