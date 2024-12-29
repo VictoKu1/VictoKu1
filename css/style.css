@@ -42,11 +42,11 @@ nav {
     position: fixed;
     top: 0;
     width: 100%;
-    background-color: rgba(0, 0, 0, 0.95);
-    color: white;
     z-index: 10;
-    /* Ensure nav sits above other elements */
-    padding: 10px 20px;
+    background-color: rgba(0, 0, 0, 0.95);
+    /* Ensure visibility */
+    overflow: visible;
+    /* Prevents clipping */
 }
 
 /* 
@@ -57,10 +57,12 @@ nav {
 .nav-container {
     display: flex;
     align-items: center;
+    /* Vertically align items */
     justify-content: flex-end;
-    /* Right-aligned for desktop */
+    /* Push items to the right */
     position: relative;
-    /* Helps position the UL absolutely on mobile */
+    /* Ensure child elements like the hamburger are positioned correctly */
+    width: 100%;
 }
 
 /* Normal desktop menu (UL) */
@@ -104,29 +106,30 @@ nav {
    HAMBURGER ICON
 ----------------------------------- */
 .hamburger {
-    display: none;
-    /* Hidden on desktop */
+    display: flex;
     flex-direction: column;
     cursor: pointer;
-    /* Add a little spacing from the right edge */
-    margin-right: 10px;
-    transition: all 0.4s ease;
-    position: relative;
+    position: absolute;
+    top: 15px;
+    right: 20px;
     z-index: 9999;
-    /* Ensure it’s on top of the nav */
 }
 
 .hamburger span {
     width: 25px;
+    /* Ensure spans are wide enough for the X */
     height: 3px;
+    /* Thickness of the lines */
     background: #fff;
+    /* Line color */
     margin: 4px 0;
+    /* Spacing between lines */
     transition: transform 0.4s ease, opacity 0.4s ease, background 0.4s ease;
 }
 
-/* When hamburger is "open", transform into an X */
 .hamburger.open span:nth-child(1) {
-    transform: rotate(45deg) translate(5px, 5px);
+    transform: rotate(45deg) translate(10px, 10px);
+    /* Top bar rotates into the upper diagonal */
 }
 
 .hamburger.open span:nth-child(2) {
@@ -135,8 +138,10 @@ nav {
 }
 
 .hamburger.open span:nth-child(3) {
-    transform: rotate(-45deg) translate(7px, -8px);
+    transform: rotate(-45deg) translate(5px, -5px);
+    /* Bottom bar rotates into the lower diagonal */
 }
+
 
 /* -----------------------------------
    SECTIONS
@@ -443,14 +448,71 @@ section {
     }
 }
 
+#nav-links {
+    display: flex;
+    /* Horizontal display */
+    list-style: none;
+    /* Remove default bullets */
+    margin: 0;
+    padding: 0;
+    justify-content: flex-end;
+    /* Push menu items to the right */
+    width: 100%;
+    /* Ensure it spans the full width */
+}
+
+#nav-links li {
+    margin-left: 20px;
+    /* Add spacing between menu items */
+}
+
+#nav-links a {
+    text-decoration: none;
+    /* Remove underline */
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    transition: all 0.3s ease-in-out;
+}
+
+#nav-links a:hover {
+    color: #00d4ff;
+    border-bottom: 2px solid #00d4ff;
+}
+
 /* -----------------------------------
    MEDIA QUERIES FOR RESPONSIVENESS
 ----------------------------------- */
 @media (max-width: 768px) {
 
-    /* Show the hamburger on mobile */
     .hamburger {
         display: flex;
+        /* Show the hamburger on smaller screens */
+    }
+
+    #nav-links {
+        display: none;
+        /* Hide menu initially */
+        position: absolute;
+        /* Allow it to slide down */
+        top: 60px;
+        /* Place it below the navbar */
+        left: 0;
+        /* Start from the left edge */
+        width: 100%;
+        /* Span the entire width of the screen */
+        background-color: rgba(0, 0, 0, 0.95);
+        /* Menu background */
+        flex-direction: column;
+        /* Stack items vertically */
+        align-items: center;
+        /* Center align items */
+        padding: 10px 0;
+    }
+
+    #nav-links.active {
+        display: flex;
+        /* Show menu when active */
     }
 
     /* UL: slide from the top on mobile */
@@ -547,26 +609,6 @@ section {
         border-radius: 8px;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
