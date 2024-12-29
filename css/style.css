@@ -106,7 +106,7 @@ nav {
    HAMBURGER ICON
 ----------------------------------- */
 .hamburger {
-    display: flex;
+    display: hidden;
     flex-direction: column;
     cursor: pointer;
     position: absolute;
