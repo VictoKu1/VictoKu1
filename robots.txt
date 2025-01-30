@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Sitemap: https://victoku1.netlify.app/sitemap.xml
+

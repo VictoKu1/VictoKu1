@@ -1,3 +1,44 @@
-User-agent: *
-Allow: /
-Sitemap: https://victoku1.netlify.app/sitemap.xml
+# Redirect all 404 errors to homepage (optional, but good for single-page portfolios)
+404.html /index.html 301
+
+# Force HTTPS (ensures only secure URLs are indexed)
+http://victoku1.netlify.app/* https://victoku1.netlify.app/:splat 301!
+
+# Ensure www. redirects to non-www. (Canonical URL fix)
+www.victoku1.netlify.app/* https://victoku1.netlify.app/:splat 301!
+
+# Let search engines know about the sitemap
+/sitemap.xml https://victoku1.netlify.app/sitemap.xml 200
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
