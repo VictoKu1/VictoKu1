@@ -44,9 +44,11 @@ nav {
     width: 100%;
     z-index: 10;
     background-color: rgba(0, 0, 0, 0.95);
-    /* Ensure visibility */
-    overflow: visible;
-    /* Prevents clipping */
+    height: 70px;
+    /* Keep the navbar height */
+    display: flex;
+    align-items: center;
+    /* Align items in the middle vertically */
 }
 
 /* 
@@ -57,12 +59,36 @@ nav {
 .nav-container {
     display: flex;
     align-items: center;
-    /* Vertically align items */
-    justify-content: flex-end;
-    /* Push items to the right */
-    position: relative;
-    /* Ensure child elements like the hamburger are positioned correctly */
-    width: 100%;
+    /* Ensures vertical centering */
+    justify-content: space-between;
+    width: 90%;
+    max-width: 1400px;
+    margin: 0 auto;
+    height: 100%;
+    /* Ensure full height */
+}
+
+/* Clickable Favicon (Logo) */
+.nav-logo {
+    display: flex;
+    align-items: center;
+    /* Vertically center */
+    text-decoration: none;
+    margin-right: 20px;
+    height: 100%;
+}
+
+.nav-logo img {
+    width: 100px;
+    /* Adjusted size */
+    height: 100px;
+    /* Adjusted size */
+    border-radius: 50%;
+    transition: transform 0.2s ease;
+}
+
+.nav-logo:hover img {
+    transform: scale(1.1);
 }
 
 /* Normal desktop menu (UL) */
@@ -71,11 +97,13 @@ nav {
     margin: 0;
     padding: 0;
     display: flex;
-    /* Horizontal row on desktop */
+    align-items: center;
     justify-content: flex-end;
-    padding-right: 5%;
+    /* Push items to the right */
+    position: relative;
+    /* Ensure child elements like the hamburger are positioned correctly */
+    width: 100%;
 }
-
 
 .nav-container ul li {
     margin: 0 15px;
@@ -86,6 +114,12 @@ nav {
     color: white;
     font-weight: bold;
     font-size: 18px;
+    padding: 10px 0;
+    /* Add vertical padding */
+    display: flex;
+    align-items: center;
+    /* Ensure links are centered vertically */
+    height: 100%;
     transition: all 0.3s ease-in-out;
 }
 
@@ -106,24 +140,22 @@ nav {
    HAMBURGER ICON
 ----------------------------------- */
 .hamburger {
-    display: hidden;
+    display: none;
     flex-direction: column;
     cursor: pointer;
     position: absolute;
-    top: 15px;
+    top: 50%;
     right: 20px;
+    transform: translateY(-50%);
+    /* Ensure it stays in the middle */
     z-index: 9999;
 }
 
 .hamburger span {
     width: 25px;
-    /* Ensure spans are wide enough for the X */
     height: 3px;
-    /* Thickness of the lines */
     background: #fff;
-    /* Line color */
     margin: 4px 0;
-    /* Spacing between lines */
     transition: transform 0.4s ease, opacity 0.4s ease, background 0.4s ease;
 }
 
@@ -495,6 +527,13 @@ iframe {
     .hamburger {
         display: flex;
         /* Show the hamburger on smaller screens */
+    }
+
+    .nav-logo {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9999;
     }
 
     #nav-links {
