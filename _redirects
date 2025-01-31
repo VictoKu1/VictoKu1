@@ -7,8 +7,8 @@ http://victoku1.netlify.app/* https://victoku1.netlify.app/:splat 301!
 # Ensure www. redirects to non-www. (Canonical URL fix)
 www.victoku1.netlify.app/* https://victoku1.netlify.app/:splat 301!
 
-# Let search engines know about the sitemap
-/sitemap.xml https://victoku1.netlify.app/sitemap.xml 200
+
+
 
 
 
