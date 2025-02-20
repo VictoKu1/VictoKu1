@@ -30,6 +30,11 @@ I'm a passionate Software Engineer and Unity Developer with a strong background 
 - **Core Competencies**: Algorithms, Data Structures, Software Development, Video Games Development, Game Design
 
 ## Projects
+
+### Website Development
+- **Personal Portfolio Website**: Developed a personal portfolio website to showcase my skills, projects, and professional background using HTML, CSS, and JavaScript. [Website](https://victoku1.netlify.app/)
+- **TitanSphere Studios Website**: Designed and developed the official website for TitanSphere Studios, featuring studios latest games, and contact information, built with HTML, CSS, and JavaScript. [Website](https://titansphere.xyz/)
+
 ### Major Contributions
 - **NetworkX Library Contribution**: Implemented Coalition Formation in Multi-agent Systems [Pull Request #6364](https://github.com/networkx/networkx/pull/6364)
 - **API Traffic Security Classification**: Conducted research for Ariel Cyber Innovation Center Cisco Competition. [GitHub](https://github.com/VictoKu1/API_Security_Research)
