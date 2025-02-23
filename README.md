@@ -30,7 +30,7 @@ I'm a passionate Software Engineer and Unity Developer with a strong background 
 - **Core Competencies**: Algorithms, Data Structures, Software Development, Video Games Development, Game Design
 
 ## Projects
-# Current Open Source Projects
+## Current Open Source Projects
 - **encycloped.ai (AI Moderated Encyclopedia)**: A community-driven, decentralized encyclopedia platform built with Flask and the ChatGPT API (Or any other LLM with an API) [GitHub](https://github.com/VictoKu1/encycloped.ai)
 - **Social Network Analyzer**:Flask-powered app that combines AI-driven insights with social media intelligent personality summaries using OpenAI’s cutting-edge models [GitHub](https://github.com/VictoKu1/Social-Network-Analyzer)
 - **QR Analyzer Flutter App**:Cross-platform Flutter app for analyzing QR codes with OpenAI for potential security risks [GitHub](https://github.com/VictoKu1/qr_analyzer)
