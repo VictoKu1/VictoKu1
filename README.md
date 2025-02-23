@@ -30,6 +30,10 @@ I'm a passionate Software Engineer and Unity Developer with a strong background 
 - **Core Competencies**: Algorithms, Data Structures, Software Development, Video Games Development, Game Design
 
 ## Projects
+# Current Open Source Projects
+- **encycloped.ai (AI Moderated Encyclopedia)**: A community-driven, decentralized encyclopedia platform built with Flask and the ChatGPT API (Or any other LLM with an API) [GitHub](https://github.com/VictoKu1/encycloped.ai)
+- **Social Network Analyzer**:Flask-powered app that combines AI-driven insights with social media intelligent personality summaries using OpenAI’s cutting-edge models [GitHub](https://github.com/VictoKu1/Social-Network-Analyzer)
+- **QR Analyzer Flutter App**:Cross-platform Flutter app for analyzing QR codes with OpenAI for potential security risks [GitHub](https://github.com/VictoKu1/qr_analyzer)
 
 ### Website Development
 - **Personal Portfolio Website**: Developed a personal portfolio website to showcase my skills, projects, and professional background using HTML, CSS, and JavaScript. [Website](https://victoku1.netlify.app/)
@@ -61,15 +65,6 @@ I'm a passionate Software Engineer and Unity Developer with a strong background 
 
 ## Contact me 
 [![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:victoku1.info@gmail.com)
-
-
-
-
-
-
-
-
-
 
 
 
