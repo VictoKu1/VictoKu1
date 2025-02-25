@@ -58,9 +58,9 @@ I'm a passionate Software Engineer and Unity Developer with a strong background 
 - **Many Other Projects.....**: [GitHub](https://github.com/VictoKu1?tab=repositories)
 
 ## Languages
-- English
-- Hebrew 
-- Russian
+- **English**
+- **Hebrew** 
+- **Russian**
 
 
 ## Contact me 
