@@ -25,7 +25,7 @@ I'm a passionate Software Engineer and Unity Developer with a strong background 
 ![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=VictoKu1&layout=compact)
 
 ## Skills
-- **Programming Languages**: Python, Java, C#, C, C++, JavaScript, Shell
+- **Programming Languages**: Python, Java, C#, C, C++, JavaScript, Shell, HTML, CSS
 - **Tools & Technologies**: Docker, Linux, Git, Unity
 - **Core Competencies**: Algorithms, Data Structures, Software Development, Video Games Development, Game Design
 
