@@ -47,6 +47,16 @@ p a:hover {
     /* Optional: change on hover */
 }
 
+.intro-languages {
+    margin-top: 10px;
+    font-size: 1rem;
+    color: #00d4ff;
+}
+
+.intro-languages strong {
+    font-weight: bold;
+}
+
 /* -----------------------------------
    NAVIGATION BAR
 ----------------------------------- */
