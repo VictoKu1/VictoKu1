@@ -78,6 +78,17 @@ nav {
     height: 100%;
 }
 
+.nav-logo h1 {
+    position: absolute;
+    left: -9999px;
+    /* Off-screen but readable by search engines */
+    top: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    opacity: 0;
+}
+
 .nav-logo img {
     width: 100px;
     /* Adjusted size */
@@ -363,6 +374,22 @@ section {
     text-align: left;
 }
 
+.project-category ul li {
+    padding-left: 3.5em;
+    /* Desired indent */
+    position: relative;
+}
+
+.project-category ul li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: inherit;
+    /* Bullet color same as text */
+    padding-left: 1em;
+}
+
 iframe {
     border: none;
     /* Removes default border */
@@ -396,6 +423,9 @@ iframe {
 .project-category ul {
     list-style-type: none;
     padding: 0;
+    list-style: none;
+    /* Remove default bullets */
+    padding-left: 0;
 }
 
 .project-category li {
@@ -416,6 +446,29 @@ iframe {
 }
 
 /* CONTACT SECTION */
+.author {
+    width: 100%;
+    text-align: center;
+    background-color: transparent;
+    /* or your preferred background */
+    position: relative;
+    /* or static */
+    font-size: 0.95rem;
+    margin-top: 25px;
+}
+
+.author a {
+    color: #ffffff;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.author a:hover {
+    text-decoration: underline;
+    color: #ffffff;
+}
+
+
 #contact {
     background-color: #252525;
     color: white;
