@@ -35,6 +35,18 @@ p {
     line-height: 1.6;
 }
 
+p a {
+    color: #fff;
+    text-decoration: none;
+    /* Optional: remove underline */
+    transition: color 0.3s ease;
+}
+
+p a:hover {
+    color: #00d4ff;
+    /* Optional: change on hover */
+}
+
 /* -----------------------------------
    NAVIGATION BAR
 ----------------------------------- */
@@ -76,6 +88,7 @@ nav {
     text-decoration: none;
     margin-right: 20px;
     height: 100%;
+
 }
 
 .nav-logo h1 {

@@ -1,4 +1,17 @@
-// Smooth scroll function (unchanged)
+/**
+ * menuHighlight.js
+ * ----------------
+ * Provides smooth scrolling to sections and dynamic highlighting of
+ * navigation links based on scroll position. Also includes functionality
+ * to toggle a mobile hamburger menu.
+ */
+
+/**
+ * scrollToSection
+ * ----------------
+ * Smoothly scrolls the page to the specified section.
+ * @param {string} sectionId - The selector for the target section.
+ */
 function scrollToSection(sectionId) {
     const section = document.querySelector(sectionId);
     if (section) {
@@ -6,17 +19,22 @@ function scrollToSection(sectionId) {
     }
 }
 
-// Wait for DOM to load
+// Wait for the DOM to fully load before executing
 document.addEventListener("DOMContentLoaded", () => {
     const sections = document.querySelectorAll("section");
     const navLinks = document.querySelectorAll("nav ul li a");
     const navList = document.getElementById("nav-links");
 
-    // Function to update the active link based on scroll position
+    /**
+     * updateActiveLink
+     * ----------------
+     * Determines which section is currently in view and updates the active
+     * class on the corresponding navigation link.
+     */
     const updateActiveLink = () => {
         let currentSection = "";
 
-        // Loop through each section to find which one is currently in view
+        // Loop through each section to determine the current section in view.
         sections.forEach((section) => {
             const sectionTop = section.offsetTop;
             const sectionHeight = section.offsetHeight;
@@ -25,12 +43,12 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        // Handle the bottom of the page
+        // Handle the bottom of the page by ensuring the "contact" section is active.
         if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
             currentSection = "contact";
         }
 
-        // Update the active class on nav links
+        // Update the active class on navigation links.
         navLinks.forEach((link) => {
             link.classList.remove("active");
             if (link.getAttribute("href").substring(1) === currentSection) {
@@ -39,26 +57,27 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     };
 
-    // Run the function on scroll
+    // Attach the updateActiveLink function to the scroll event.
     window.addEventListener("scroll", updateActiveLink);
 
-    // OPTIONAL: If you want the menu to close automatically when you click a link:
+    // OPTIONAL: Close the mobile menu when a navigation link is clicked.
     navLinks.forEach(link => {
         link.addEventListener("click", () => {
-            // Remove 'active' class from the UL to close the menu after link click
             navList.classList.remove("active");
         });
     });
 });
 
+/**
+ * toggleMenu
+ * ----------
+ * Toggles the mobile navigation menu and morphs the hamburger icon into an X.
+ */
 function toggleMenu() {
     const navList = document.getElementById("nav-links");
     const hamburger = document.querySelector(".hamburger");
 
-    // Slide the mobile menu down/up:
+    // Toggle menu visibility and animate the hamburger icon.
     navList.classList.toggle("active");
-    // Morph the hamburger into X (and back):
     hamburger.classList.toggle("open");
 }
-
-

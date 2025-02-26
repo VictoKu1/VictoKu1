@@ -1,26 +1,51 @@
+/**
+ * Particle Animation Script
+ * ---------------------------
+ * This script creates an animated particle system on the canvas element with id "particleCanvas".
+ * The particles respond to mouse and touch events and connect with lines when they are near each other.
+ * The canvas is sized to match the #home section's dimensions, and the code is optimized for 265 particles.
+ */
+
 const canvas = document.getElementById('particleCanvas');
 const ctx = canvas.getContext('2d');
 
-// Mouse and touch input
+// Mouse and touch input configuration
 const mouse = { x: null, y: null, radius: 150 };
 
-// Resize canvas with proper scaling
-function resizeCanvas() {
-    const homeSection = document.getElementById('home'); // Get the home section
-    const rect = homeSection.getBoundingClientRect();
+// Cached bounding rectangle for the canvas element
+let canvasRect = null;
 
-    const scale = window.devicePixelRatio || 1; // Handle high-DPI screens
+/**
+ * resizeCanvas
+ * ------------
+ * Resizes the canvas to match the dimensions of the #home section.
+ * Uses window.devicePixelRatio to support high-DPI screens.
+ * Updates the cached canvasRect for accurate coordinate calculations.
+ */
+function resizeCanvas() {
+    const homeSection = document.getElementById('home');
+    const rect = homeSection.getBoundingClientRect();
+    const scale = window.devicePixelRatio || 1;
+
     canvas.width = rect.width * scale;
     canvas.height = rect.height * scale;
-
     canvas.style.width = `${rect.width}px`;
     canvas.style.height = `${rect.height}px`;
 
-    ctx.scale(scale, scale);
+    // Update cached bounding rectangle
+    canvasRect = canvas.getBoundingClientRect();
 }
 
+// Update canvasRect on scroll so that mouse/touch events remain accurate
+window.addEventListener('scroll', () => {
+    canvasRect = canvas.getBoundingClientRect();
+});
 
-// Generate particles
+/**
+ * Particle Class
+ * --------------
+ * Represents an individual particle.
+ */
 class Particle {
     constructor(x, y, dx, dy, size) {
         this.x = x;
@@ -30,25 +55,43 @@ class Particle {
         this.size = size;
     }
 
+    /**
+     * draw
+     * ----
+     * Draws the particle. If highlighted is true, draws it in white.
+     * @param {boolean} highlighted - Whether the particle should be highlighted.
+     */
     draw(highlighted = false) {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fillStyle = highlighted ? '#ffffff' : 'rgba(0, 170, 255, 0.5)'; // Highlight or dim
+        ctx.fillStyle = highlighted ? '#ffffff' : 'rgba(0, 170, 255, 0.5)';
         ctx.fill();
     }
 
+    /**
+     * update
+     * ------
+     * Updates the particle's position and reverses its velocity if it hits canvas boundaries.
+     */
     update() {
-        // Bounce particles off canvas edges
-        if (this.x + this.size > canvas.width || this.x - this.size < 0) this.dx *= -1;
-        if (this.y + this.size > canvas.height || this.y - this.size < 0) this.dy *= -1;
-
+        if (this.x + this.size > canvas.width || this.x - this.size < 0) {
+            this.dx *= -1;
+        }
+        if (this.y + this.size > canvas.height || this.y - this.size < 0) {
+            this.dy *= -1;
+        }
         this.x += this.dx;
         this.y += this.dy;
     }
 }
 
-// Initialize particles
 const particles = [];
+
+/**
+ * initParticles
+ * -------------
+ * Initializes the particles array with 265 particles at random positions and velocities.
+ */
 function initParticles() {
     particles.length = 0;
     const particleCount = 265;
@@ -62,26 +105,30 @@ function initParticles() {
     }
 }
 
-// Connect particles
+/**
+ * connectParticles
+ * ----------------
+ * Draws lines connecting particles that are within a specified distance.
+ * Uses cached squared distances for efficiency.
+ * @param {Array} highlightedParticles - Array of particles near the mouse.
+ */
 function connectParticles(highlightedParticles) {
     const maxDistance = 120;
-    const maxDistanceSquared = maxDistance ** 2;
+    const maxDistanceSquared = maxDistance * maxDistance;
+    const len = particles.length;
 
-    for (let a = 0; a < particles.length; a++) {
-        for (let b = a + 1; b < particles.length; b++) {
+    for (let a = 0; a < len; a++) {
+        for (let b = a + 1; b < len; b++) {
             const dx = particles[a].x - particles[b].x;
             const dy = particles[a].y - particles[b].y;
             const distSq = dx * dx + dy * dy;
-
             const isHighlighted =
                 highlightedParticles.includes(particles[a]) ||
                 highlightedParticles.includes(particles[b]);
-
             if (distSq < maxDistanceSquared) {
                 ctx.strokeStyle = isHighlighted
-                    ? `rgba(0, 170, 255, 0.3)` // Highlighted
-                    : `rgba(0, 170, 255, 0.1)`; // Dimmed
-
+                    ? 'rgba(0, 170, 255, 0.3)'
+                    : 'rgba(0, 170, 255, 0.1)';
                 ctx.beginPath();
                 ctx.moveTo(particles[a].x, particles[a].y);
                 ctx.lineTo(particles[b].x, particles[b].y);
@@ -91,73 +138,88 @@ function connectParticles(highlightedParticles) {
     }
 }
 
-// Connect mouse to particles
+/**
+ * connectMouse
+ * ------------
+ * Draws lines connecting the mouse position to nearby particles.
+ * The line opacity is based on distance.
+ * @param {Array} highlightedParticles - Array of particles near the mouse.
+ */
 function connectMouse(highlightedParticles) {
-    const maxDistanceSquared = mouse.radius ** 2;
-
-    for (const particle of highlightedParticles) {
-        const dx = mouse.x - particle.x;
-        const dy = mouse.y - particle.y;
+    const maxDistanceSquared = mouse.radius * mouse.radius;
+    const len = highlightedParticles.length;
+    for (let i = 0; i < len; i++) {
+        const p = highlightedParticles[i];
+        const dx = mouse.x - p.x;
+        const dy = mouse.y - p.y;
         const distSq = dx * dx + dy * dy;
-
         if (distSq < maxDistanceSquared) {
             const opacity = 1 - distSq / maxDistanceSquared;
             ctx.strokeStyle = `rgba(255, 255, 255, ${opacity})`;
             ctx.beginPath();
             ctx.moveTo(mouse.x, mouse.y);
-            ctx.lineTo(particle.x, particle.y);
+            ctx.lineTo(p.x, p.y);
             ctx.stroke();
         }
     }
 }
 
-// Highlight nodes around the mouse
+/**
+ * getHighlightedParticles
+ * -------------------------
+ * Returns an array of particles that are within the mouse radius.
+ * @returns {Array} An array of highlighted particles.
+ */
 function getHighlightedParticles() {
     const highlightedParticles = [];
     if (mouse.x !== null && mouse.y !== null) {
-        particles.forEach(p => {
+        const radiusSq = mouse.radius * mouse.radius;
+        const len = particles.length;
+        for (let i = 0; i < len; i++) {
+            const p = particles[i];
             const dx = mouse.x - p.x;
             const dy = mouse.y - p.y;
-            const distSq = dx * dx + dy * dy;
-            if (distSq < mouse.radius ** 2) {
+            if (dx * dx + dy * dy < radiusSq) {
                 highlightedParticles.push(p);
             }
-        });
+        }
     }
     return highlightedParticles;
 }
 
-// Animation loop
+/**
+ * animate
+ * -------
+ * The main animation loop that clears the canvas, updates and draws particles,
+ * and then draws connections between particles and between the mouse and particles.
+ */
 function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Highlight nodes around the mouse
     const highlightedParticles = getHighlightedParticles();
-
-    // Update and draw particles
-    particles.forEach(p => {
+    const len = particles.length;
+    for (let i = 0; i < len; i++) {
+        const p = particles[i];
         p.update();
-        const isHighlighted = highlightedParticles.includes(p);
-        p.draw(isHighlighted);
-    });
-
-    // Connect particles
+        p.draw(highlightedParticles.includes(p));
+    }
     connectParticles(highlightedParticles);
-
-    // Connect mouse to particles
-    if (mouse.x !== null && mouse.y !== null) connectMouse(highlightedParticles);
-
+    if (mouse.x !== null && mouse.y !== null) {
+        connectMouse(highlightedParticles);
+    }
     requestAnimationFrame(animate);
 }
 
-// Mouse and touch event listeners
+/**
+ * Event Listeners for Mouse and Touch Input
+ * ------------------------------------------
+ * These update the mouse coordinates based on the cached canvasRect.
+ */
 canvas.addEventListener('mousemove', (e) => {
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-
-    mouse.x = (e.clientX - rect.left) * scaleX;
-    mouse.y = (e.clientY - rect.top) * scaleY;
+    if (!canvasRect) return;
+    const scaleX = canvas.width / canvasRect.width;
+    const scaleY = canvas.height / canvasRect.height;
+    mouse.x = (e.clientX - canvasRect.left) * scaleX;
+    mouse.y = (e.clientY - canvasRect.top) * scaleY;
 });
 
 canvas.addEventListener('touchstart', handleTouch);
@@ -166,29 +228,32 @@ canvas.addEventListener('touchend', () => {
     mouse.x = null;
     mouse.y = null;
 });
-
 canvas.addEventListener('mouseout', () => {
     mouse.x = null;
     mouse.y = null;
 });
 
+/**
+ * handleTouch
+ * -----------
+ * Processes touch events and updates the mouse coordinates.
+ */
 function handleTouch(e) {
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-    const touch = e.touches[0]; // First touch point
-
-    mouse.x = (touch.clientX - rect.left) * scaleX;
-    mouse.y = (touch.clientY - rect.top) * scaleY;
+    if (!canvasRect) return;
+    const scaleX = canvas.width / canvasRect.width;
+    const scaleY = canvas.height / canvasRect.height;
+    const touch = e.touches[0];
+    mouse.x = (touch.clientX - canvasRect.left) * scaleX;
+    mouse.y = (touch.clientY - canvasRect.top) * scaleY;
 }
 
-// Initialize canvas and particles
+// Update canvas and reinitialize particles on window resize
 window.addEventListener('resize', () => {
     resizeCanvas();
     initParticles();
 });
 
+// Initial setup and start animation loop
 resizeCanvas();
 initParticles();
 animate();
-
