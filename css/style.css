@@ -785,3 +785,62 @@ iframe {
     border-radius: 8px;
   }
 }
+
+/* Custom Scrollbar Styles (Desktop & Mobile) */
+/* Hide scrollbar background, remove buttons, style thumb */
+::-webkit-scrollbar {
+  width: 5px;
+  background: transparent !important;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(40, 40, 40, 0.8);
+  border-radius: 6px;
+  transition: opacity 0.3s;
+  opacity: 1;
+}
+::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+::-webkit-scrollbar-button {
+  display: none;
+  height: 0;
+  width: 0;
+}
+
+/* Hide thumb when not scrolling (desktop & mobile) */
+body:not(:hover) ::-webkit-scrollbar-thumb {
+  opacity: 0;
+}
+body:active ::-webkit-scrollbar-thumb,
+body:hover ::-webkit-scrollbar-thumb {
+  opacity: 1;
+}
+
+/* For Firefox */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(40, 40, 40, 0.8) transparent;
+}
+
+@media (max-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(40, 40, 40, 0.8);
+    border-radius: 6px;
+  }
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(40, 40, 40, 0.8) transparent;
+  }
+}
+
+
+
+
+
+
+
+
+

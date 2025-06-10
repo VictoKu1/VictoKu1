@@ -43,7 +43,7 @@
                 <img src="media/favicon.ico" alt="Victor Kushnir Logo" />
                 <h1 class="sitename">VictoKu1</h1>
             </a>
-            <div class="hamburger" onclick="toggleMenu()">
+            <div class="hamburger" id="hamburger-menu">
                 <!-- Hamburger Icon (3 Bars) -->
                 <span></span>
                 <span></span>
@@ -66,7 +66,7 @@
         <div class="intro">
             <h1>Hi, I'm Victor</h1>
             <p>I'm A Software Engineer & Game Developer</p>
-            <button class="scroll-button" onclick="scrollToSection('#about')">Who Am I?</button>
+            <button class="scroll-button" id="scroll-about">Who Am I?</button>
 
         </div>
 
@@ -269,6 +269,24 @@
     <script src="js/articles.js"></script>
     <script src="js/particles.js"></script>
     <script src="js/menuHighlight.js"></script>
+    <script>
+      // Attach event listeners in JS for accessibility and security
+      document.getElementById('scroll-about').addEventListener('click', function() {
+        scrollToSection('#about');
+      });
+      document.getElementById('hamburger-menu').addEventListener('click', function() {
+        toggleMenu();
+      });
+      // Accessibility: Add aria-current to active nav link
+      function setAriaCurrent() {
+        const navLinks = document.querySelectorAll('#nav-links a');
+        navLinks.forEach(link => link.removeAttribute('aria-current'));
+        const active = document.querySelector('#nav-links a.active');
+        if (active) active.setAttribute('aria-current', 'page');
+      }
+      document.addEventListener('DOMContentLoaded', setAriaCurrent);
+      window.addEventListener('scroll', setAriaCurrent);
+    </script>
 </body>
 
 </html>

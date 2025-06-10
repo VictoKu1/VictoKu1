@@ -13,6 +13,7 @@
 </div>
 
 ## About Me
+
 I'm a passionate Software Engineer and Unity Developer with a strong background in Computer Science and Mathematics. I have a keen interest in Algorithms, Data Structures, and Game Development. I enjoy working on various projects, from creating Video Games to Developing complex Algorithms and Systems, AI, Machine Learning, Web Development and Cyber Security.
 
 - 🎓 BSc in Computer Science and Mathematics from Ariel University (2019 - 2023)
@@ -25,32 +26,39 @@ I'm a passionate Software Engineer and Unity Developer with a strong background 
 ![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=VictoKu1&layout=compact)
 
 ## Skills
+
 - **Programming Languages**: Python, Java, C#, C, C++, JavaScript, Shell, HTML, CSS
 - **Tools & Technologies**: Docker, Linux, Git, Unity
 - **Core Competencies**: Algorithms, Data Structures, Software Development, Video Games Development, Game Design
 
 ## Projects
+
 ### Current Open Source Projects
+
 - **encycloped.ai (AI Moderated Encyclopedia)**: A community-driven, decentralized encyclopedia platform built with Flask and the ChatGPT API (Or any other LLM with an API) [GitHub](https://github.com/VictoKu1/encycloped.ai)
 - **Social Network Analyzer**:Flask-powered app that combines AI-driven insights with social media intelligent personality summaries using OpenAI’s cutting-edge models [GitHub](https://github.com/VictoKu1/Social-Network-Analyzer)
 - **QR Analyzer Flutter App**:Cross-platform Flutter app for analyzing QR codes with OpenAI for potential security risks [GitHub](https://github.com/VictoKu1/qr_analyzer)
 
 ### Website Development
+
 - **Personal Portfolio Website**: Developed a personal portfolio website to showcase my skills, projects, and professional background using HTML, CSS, and JavaScript. [Website](https://victoku1.netlify.app/)
 - **TitanSphere Studios Website**: Designed and developed the official website for TitanSphere Studios, featuring studios latest games, and contact information, built with HTML, CSS, and JavaScript. [Website](https://titansphere.xyz/)
 
 ### Major Contributions
+
 - **NetworkX Library Contribution**: Implemented Coalition Formation in Multi-agent Systems [Pull Request #6364](https://github.com/networkx/networkx/pull/6364)
 - **API Traffic Security Classification**: Conducted research for Ariel Cyber Innovation Center Cisco Competition. [GitHub](https://github.com/VictoKu1/API_Security_Research)
 - **SCADA Cyber Attacks Detection**: Researched industrial power control system security. [GitHub](https://github.com/VictoKu1/IndustrialControlSystemCyberAttackDetectingCourse)
 
 ### Game Development
+
 - **SolveIt**: A casual puzzle mobile game (Under Development). [Mobile Public Testing](https://victoku1.itch.io/solveit)
 - **Cuble**: WebGL and Mobile puzzle game. [Play Now](https://victoku1.itch.io/cuble)
 - **Dimensional**: A Unity WebGL video game. [Play Now](https://victoku1.itch.io/mazesimulation1)
 - **Jumper**: A Unity WebGL video game. [Play Now](https://victoku1.itch.io/jumper)
 
 ### Other Projects
+
 - **Governmental Coalition Calculation System**: [GitHub](https://github.com/FairCoalitionCasesDistributionProject)
 - **MINIMAP Android App**: A location-based social security network. [GitHub](https://github.com/V-P-A-AppDev/MINIMAP)
 - **Evil Twin Attack and Defense in Python**: [GitHub](https://github.com/Wireless-Network-Security/Evil-Twin)
@@ -58,13 +66,25 @@ I'm a passionate Software Engineer and Unity Developer with a strong background 
 - **Many Other Projects.....**: [GitHub](https://github.com/VictoKu1?tab=repositories)
 
 ## Languages
+
 - **English**
 - **Hebrew** 
 - **Russian**
 
 
-## Contact me 
+## Contact me
+
 [![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:victoku1.info@gmail.com)
+
+
+
+
+
+
+
+
+
+
 
 
 
