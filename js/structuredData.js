@@ -1,9 +1,6 @@
 /**
- * structuredData.js
- * ------------------
  * Dynamically generates and appends a JSON-LD script element containing structured data
  * for SEO purposes. The data conforms to Schema.org's "Person" type and provides information
- * about Victor Kushnir.
  */
 (function () {
   // Define the structured data object according to Schema.org guidelines.

@@ -1,6 +1,4 @@
 /**
- * menuHighlight.js
- * ----------------
  * Provides smooth scrolling to sections and dynamic highlighting of
  * navigation links based on scroll position. Also includes functionality
  * to toggle a mobile hamburger menu.
@@ -10,7 +8,6 @@
  * scrollToSection
  * ----------------
  * Smoothly scrolls the page to the specified section.
- * @param {string} sectionId - The selector for the target section.
  */
 function scrollToSection(sectionId) {
   const section = document.querySelector(sectionId);
@@ -81,6 +78,3 @@ function toggleMenu() {
   navList.classList.toggle("active");
   hamburger.classList.toggle("open");
 }
-
-
-

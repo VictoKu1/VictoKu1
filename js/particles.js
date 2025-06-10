@@ -1,6 +1,4 @@
 /**
- * Particle Animation Script
- * ---------------------------
  * This script creates an animated particle system on the canvas element with id "particleCanvas".
  * The particles respond to mouse and touch events and connect with lines when they are near each other.
  * The canvas is sized to match the #home section's dimensions, and the code is optimized for 265 particles.
