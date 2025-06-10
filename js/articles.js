@@ -40,11 +40,10 @@ document.addEventListener("DOMContentLoaded", function () {
           // Extract first image from article content, fallback to favicon
           const imgMatch = item.content.match(/<img[^>]+src=\"([^">]+)\"/);
           const imgSrc = imgMatch ? imgMatch[1] : "media/favicon.ico";
-          // Create a short description (plain text, 140 chars)
-          const shortDesc =
-            sanitizeText(
-              item.description.replace(/<[^>]+>/g, "").slice(0, 140)
-            ) + "...";
+          let figcaptionMatch = item.description.match(
+            /<figcaption[^>]*>(.*?)<\/figcaption>/i
+          );
+          let shortDesc = figcaptionMatch[1];
           // Sanitize all dynamic content
           const safeTitle = sanitizeText(item.title);
           const safeLink = sanitizeUrl(item.link);
@@ -72,23 +71,3 @@ document.addEventListener("DOMContentLoaded", function () {
   // Run on page load
   fetchMediumArticles();
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
