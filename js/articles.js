@@ -42,16 +42,11 @@ document.addEventListener("DOMContentLoaded", function () {
           const imgSrc = imgMatch ? imgMatch[1] : "media/favicon.ico";
           // Create a short description (plain text, 140 chars)
           const shortDesc =
-            sanitizeText(item.description.replace(/<[^>]+>/g, "").slice(0, 140)) + "...";
-          // Format publication date
-          const pubDate = new Date(item.pubDate).toLocaleDateString(undefined, {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-          });
+            sanitizeText(
+              item.description.replace(/<[^>]+>/g, "").slice(0, 140)
+            ) + "...";
           // Sanitize all dynamic content
           const safeTitle = sanitizeText(item.title);
-          const safeAuthor = sanitizeText(item.author);
           const safeLink = sanitizeUrl(item.link);
           // Return HTML for a single article card
           return `
@@ -62,7 +57,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
                 <div class="article-content">
                   <h2 class="article-title">${safeTitle}</h2>
-                  <p class="article-meta">${pubDate} &bull; ${safeAuthor}</p>
                   <p class="article-desc">${shortDesc}</p>
                 </div>
               </a>
@@ -78,6 +72,21 @@ document.addEventListener("DOMContentLoaded", function () {
   // Run on page load
   fetchMediumArticles();
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
