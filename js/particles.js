@@ -8,7 +8,28 @@ const canvas = document.getElementById("particleCanvas");
 const ctx = canvas.getContext("2d");
 
 // Mouse and touch input configuration
-const mouse = { x: null, y: null, radius: 150 };
+const mouse = {
+  x: null,
+  y: null,
+  radius: 150,
+  isDown: false,
+  gravityCenter: null,
+  velocity: { x: 0, y: 0 },
+  lastX: null,
+  lastY: null,
+  lastMoveTime: 0,
+};
+
+// Physics constants
+const G = 0.15; // Base gravitational constant
+const ESCAPE_VELOCITY_FACTOR = 1.5; // Factor to determine escape velocity
+const ORBIT_SPEED_FACTOR = 0.4; // Base orbital speed factor
+const MAX_ORBIT_RADIUS = 200; // Maximum distance for orbital connection
+const MIN_ORBIT_RADIUS = 20; // Minimum distance for stable orbit
+const GRAVITY_FALLOFF = 1.5; // How quickly gravity strength decreases with distance
+const ORBIT_MAINTENANCE_FACTOR = 0.95; // How strongly to maintain orbit radius
+const RESPONSE_FACTOR = 0.3; // How quickly particles respond to mouse movement
+const SPEED_MULTIPLIER = 2.0; // Maximum speed multiplier for closest particles
 
 // Cached bounding rectangle for the canvas element
 let canvasRect = null;
@@ -51,6 +72,18 @@ class Particle {
     this.dx = dx;
     this.dy = dy;
     this.size = size;
+    this.originalDx = dx;
+    this.originalDy = dy;
+    this.isOrbiting = false;
+    this.orbitRadius = 0;
+    this.initialOrbitRadius = 0; // Store the initial orbit radius
+    this.orbitAngle = 0;
+    this.orbitSpeed = 0;
+    this.velocity = { x: 0, y: 0 };
+    this.mass = size;
+    this.gravityStrength = 1;
+    this.lastUpdateTime = 0;
+    this.speedMultiplier = 1;
   }
 
   /**
@@ -72,14 +105,192 @@ class Particle {
    * Updates the particle's position and reverses its velocity if it hits canvas boundaries.
    */
   update() {
-    if (this.x + this.size > canvas.width || this.x - this.size < 0) {
-      this.dx *= -1;
+    const currentTime = performance.now();
+    const deltaTime = currentTime - this.lastUpdateTime;
+    this.lastUpdateTime = currentTime;
+
+    if (this.isOrbiting && mouse.gravityCenter) {
+      // Calculate distance and direction to gravity center
+      const dx = mouse.gravityCenter.x - this.x;
+      const dy = mouse.gravityCenter.y - this.y;
+      const currentDistance = Math.sqrt(dx * dx + dy * dy);
+
+      // Update gravity strength based on initial distance
+      this.gravityStrength = Math.pow(
+        1 - this.initialOrbitRadius / MAX_ORBIT_RADIUS,
+        GRAVITY_FALLOFF
+      );
+
+      // Calculate speed multiplier based on distance
+      // Closer particles move faster
+      const distanceRatio = 1 - this.initialOrbitRadius / MAX_ORBIT_RADIUS;
+      this.speedMultiplier =
+        1 + (SPEED_MULTIPLIER - 1) * Math.pow(distanceRatio, 2);
+
+      // Check if particle should escape orbit
+      if (this.initialOrbitRadius > MAX_ORBIT_RADIUS) {
+        this.escapeOrbit();
+        return;
+      }
+
+      // Calculate escape velocity with distance-based gravity
+      const escapeVelocity = Math.sqrt(
+        (2 * G * mouse.mass * this.gravityStrength) / this.initialOrbitRadius
+      );
+      const currentVelocity = Math.sqrt(
+        this.velocity.x * this.velocity.x + this.velocity.y * this.velocity.y
+      );
+
+      // If current velocity exceeds escape velocity, particle escapes
+      if (currentVelocity > escapeVelocity * ESCAPE_VELOCITY_FACTOR) {
+        this.escapeOrbit();
+        return;
+      }
+
+      // Update orbital speed based on initial distance (Kepler's laws)
+      const distanceFactor = Math.max(
+        0.2,
+        1 - this.initialOrbitRadius / MAX_ORBIT_RADIUS
+      );
+      this.orbitSpeed =
+        Math.sqrt(
+          (G * mouse.mass * this.gravityStrength) /
+            (this.initialOrbitRadius * this.initialOrbitRadius)
+        ) *
+        ORBIT_SPEED_FACTOR *
+        distanceFactor *
+        this.speedMultiplier; // Apply speed multiplier to orbital speed
+
+      // Update orbital position
+      this.orbitAngle += this.orbitSpeed;
+
+      // Calculate target position maintaining initial orbit radius
+      const targetX =
+        mouse.gravityCenter.x +
+        Math.cos(this.orbitAngle) * this.initialOrbitRadius;
+      const targetY =
+        mouse.gravityCenter.y +
+        Math.sin(this.orbitAngle) * this.initialOrbitRadius;
+
+      // Calculate current distance from target
+      const distToTarget = Math.sqrt(
+        Math.pow(targetX - this.x, 2) + Math.pow(targetY - this.y, 2)
+      );
+
+      // Adjust movement strength based on distance from target and mouse velocity
+      const moveStrength =
+        RESPONSE_FACTOR *
+        this.gravityStrength *
+        (1 + distToTarget / this.initialOrbitRadius) *
+        this.speedMultiplier;
+
+      // Move towards target position
+      this.x += (targetX - this.x) * moveStrength;
+      this.y += (targetY - this.y) * moveStrength;
+
+      // Add immediate mouse movement influence
+      if (mouse.velocity.x !== 0 || mouse.velocity.y !== 0) {
+        // Calculate perpendicular force to maintain orbit
+        const perpX = -dy / currentDistance;
+        const perpY = dx / currentDistance;
+
+        // Apply mouse velocity with immediate response and speed multiplier
+        const responseFactor = Math.min(1, deltaTime / 16); // Normalize to 60fps
+        this.x +=
+          (mouse.velocity.x * RESPONSE_FACTOR + perpX * 0.05) *
+          this.gravityStrength *
+          responseFactor *
+          this.speedMultiplier;
+        this.y +=
+          (mouse.velocity.y * RESPONSE_FACTOR + perpY * 0.05) *
+          this.gravityStrength *
+          responseFactor *
+          this.speedMultiplier;
+      }
+    } else {
+      // Normal movement
+      if (this.x + this.size > canvas.width || this.x - this.size < 0) {
+        this.dx *= -1;
+      }
+      if (this.y + this.size > canvas.height || this.y - this.size < 0) {
+        this.dy *= -1;
+      }
+      this.x += this.dx;
+      this.y += this.dy;
     }
-    if (this.y + this.size > canvas.height || this.y - this.size < 0) {
-      this.dy *= -1;
+  }
+
+  startOrbit(centerX, centerY) {
+    if (!this.isOrbiting) {
+      this.isOrbiting = true;
+      this.originalDx = this.dx;
+      this.originalDy = this.dy;
+      this.lastUpdateTime = performance.now();
+
+      // Calculate initial distance from center
+      const dx = this.x - centerX;
+      const dy = this.y - centerY;
+      this.initialOrbitRadius = Math.sqrt(dx * dx + dy * dy);
+      this.orbitRadius = this.initialOrbitRadius;
+
+      // Calculate initial angle
+      this.orbitAngle = Math.atan2(dy, dx);
+
+      // Calculate initial gravity strength
+      this.gravityStrength = Math.pow(
+        1 - this.initialOrbitRadius / MAX_ORBIT_RADIUS,
+        GRAVITY_FALLOFF
+      );
+
+      // Calculate initial speed multiplier
+      const distanceRatio = 1 - this.initialOrbitRadius / MAX_ORBIT_RADIUS;
+      this.speedMultiplier =
+        1 + (SPEED_MULTIPLIER - 1) * Math.pow(distanceRatio, 2);
+
+      // Calculate orbital speed based on initial distance (Kepler's laws)
+      const distanceFactor = Math.max(
+        0.2,
+        1 - this.initialOrbitRadius / MAX_ORBIT_RADIUS
+      );
+      this.orbitSpeed =
+        Math.sqrt(
+          (G * mouse.mass * this.gravityStrength) /
+            (this.initialOrbitRadius * this.initialOrbitRadius)
+        ) *
+        ORBIT_SPEED_FACTOR *
+        distanceFactor *
+        this.speedMultiplier;
+
+      // Set initial velocity perpendicular to radius vector
+      const speed =
+        Math.sqrt(
+          (G * mouse.mass * this.gravityStrength) / this.initialOrbitRadius
+        ) * this.speedMultiplier;
+      this.velocity.x = (-dy / this.initialOrbitRadius) * speed;
+      this.velocity.y = (dx / this.initialOrbitRadius) * speed;
     }
-    this.x += this.dx;
-    this.y += this.dy;
+  }
+
+  escapeOrbit() {
+    this.isOrbiting = false;
+    this.dx = this.velocity.x;
+    this.dy = this.velocity.y;
+    this.velocity = { x: 0, y: 0 };
+    this.gravityStrength = 1;
+    this.initialOrbitRadius = 0;
+    this.speedMultiplier = 1;
+  }
+
+  stopOrbit() {
+    if (this.isOrbiting) {
+      this.isOrbiting = false;
+      this.dx = this.originalDx;
+      this.dy = this.originalDy;
+      this.velocity = { x: 0, y: 0 };
+      this.gravityStrength = 1;
+      this.initialOrbitRadius = 0;
+      this.speedMultiplier = 1;
+    }
   }
 }
 
@@ -123,9 +334,36 @@ function connectParticles(highlightedParticles) {
       const isHighlighted =
         highlightedParticles.includes(particles[a]) ||
         highlightedParticles.includes(particles[b]);
+
       if (distSq < maxDistanceSquared) {
+        // If mouse is down and we have a gravity center
+        if (mouse.isDown && mouse.gravityCenter) {
+          // Start orbit for both particles if they're close to the gravity center
+          const distA = Math.sqrt(
+            Math.pow(particles[a].x - mouse.gravityCenter.x, 2) +
+              Math.pow(particles[a].y - mouse.gravityCenter.y, 2)
+          );
+          const distB = Math.sqrt(
+            Math.pow(particles[b].x - mouse.gravityCenter.x, 2) +
+              Math.pow(particles[b].y - mouse.gravityCenter.y, 2)
+          );
+
+          if (distA < mouse.radius) {
+            particles[a].startOrbit(
+              mouse.gravityCenter.x,
+              mouse.gravityCenter.y
+            );
+          }
+          if (distB < mouse.radius) {
+            particles[b].startOrbit(
+              mouse.gravityCenter.x,
+              mouse.gravityCenter.y
+            );
+          }
+        }
+
         ctx.strokeStyle = isHighlighted
-          ? "rgba(0, 170, 255, 0.3)"
+          ? "rgba(255, 255, 255, 0.3)"
           : "rgba(0, 170, 255, 0.1)";
         ctx.beginPath();
         ctx.moveTo(particles[a].x, particles[a].y);
@@ -216,8 +454,27 @@ canvas.addEventListener("mousemove", (e) => {
   if (!canvasRect) return;
   const scaleX = canvas.width / canvasRect.width;
   const scaleY = canvas.height / canvasRect.height;
+
+  const currentTime = performance.now();
+  const deltaTime = currentTime - mouse.lastMoveTime;
+  mouse.lastMoveTime = currentTime;
+
+  // Calculate mouse velocity with time-based normalization
+  if (mouse.lastX !== null && mouse.lastY !== null) {
+    const timeFactor = Math.min(1, deltaTime / 16); // Normalize to 60fps
+    mouse.velocity.x = (e.clientX - mouse.lastX) * scaleX * timeFactor;
+    mouse.velocity.y = (e.clientY - mouse.lastY) * scaleY * timeFactor;
+  }
+
+  mouse.lastX = e.clientX;
+  mouse.lastY = e.clientY;
+
   mouse.x = (e.clientX - canvasRect.left) * scaleX;
   mouse.y = (e.clientY - canvasRect.top) * scaleY;
+
+  if (mouse.isDown) {
+    mouse.gravityCenter = { x: mouse.x, y: mouse.y };
+  }
 });
 
 canvas.addEventListener("touchstart", handleTouch);
@@ -255,3 +512,43 @@ window.addEventListener("resize", () => {
 resizeCanvas();
 initParticles();
 animate();
+
+// Add mouse down/up event listeners
+canvas.addEventListener("mousedown", (e) => {
+  if (!canvasRect) return;
+  const scaleX = canvas.width / canvasRect.width;
+  const scaleY = canvas.height / canvasRect.height;
+
+  mouse.x = (e.clientX - canvasRect.left) * scaleX;
+  mouse.y = (e.clientY - canvasRect.top) * scaleY;
+  mouse.lastX = e.clientX;
+  mouse.lastY = e.clientY;
+  mouse.velocity = { x: 0, y: 0 };
+  mouse.isDown = true;
+  mouse.gravityCenter = { x: mouse.x, y: mouse.y };
+  mouse.mass = 100; // Set mass for gravitational calculations
+});
+
+canvas.addEventListener("mouseup", () => {
+  mouse.isDown = false;
+  mouse.gravityCenter = null;
+  mouse.velocity = { x: 0, y: 0 };
+  // Stop all orbiting particles
+  for (const particle of particles) {
+    particle.stopOrbit();
+  }
+});
+
+canvas.addEventListener("mouseout", () => {
+  mouse.x = null;
+  mouse.y = null;
+  mouse.lastX = null;
+  mouse.lastY = null;
+  mouse.isDown = false;
+  mouse.gravityCenter = null;
+  mouse.velocity = { x: 0, y: 0 };
+  // Stop all orbiting particles
+  for (const particle of particles) {
+    particle.stopOrbit();
+  }
+});

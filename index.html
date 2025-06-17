@@ -2,6 +2,16 @@
 <html lang="en">
 
 <head>
+
+    <!-- Security Headers -->
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; frame-src https://itch.io; connect-src 'self' https://api.rss2json.com; font-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/fonts/; object-src 'none'; base-uri 'self'; form-action 'self';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
+
     <!-- Basic Meta Information -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -23,6 +33,10 @@
 
     <!-- External Scripts -->
     <script src="js/structuredData.js"></script>
+    <script src="js/particles.js" defer></script>
+    <script src="js/interactions.js" defer></script>
+    <script src="js/articles.js" defer></script>
+    <script src="js/menuHighlight.js" defer></script>
 
     <!-- Structured Data for SEO (Person Schema) -->
     <script type="application/ld+json">
@@ -158,7 +172,7 @@
                         <strong>Social Network Analyzer:</strong>
                     </a>
                     Flask-powered app that combines AI-driven insights with social media intelligent personality
-                    summaries using OpenAI’s cutting-edge models
+                    summaries using OpenAI's cutting-edge models
                 </li>
                 <li>
                     <a href="https://github.com/VictoKu1/qr_analyzer" target="_blank">
@@ -280,12 +294,6 @@
             Designed and Built by <a href="/" target="_blank">VictoKu1</a>
         </div>
     </section>
-
-    <!-- External Scripts -->
-    <script src="js/articles.js"></script>
-    <script src="js/particles.js"></script>
-    <script src="js/menuHighlight.js"></script>
-    <script src="js/interactions.js"></script>
 </body>
 
 </html>

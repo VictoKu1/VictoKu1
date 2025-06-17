@@ -5,11 +5,13 @@ body {
   margin: 0;
   font-family: Arial, sans-serif;
   scroll-behavior: smooth;
-  background-color: #000000;
+  background-color: #000;
+
   /* Black background */
   color: white;
   padding: 0;
   overflow-x: hidden;
+
   /* Prevent horizontal overflow */
 }
 
@@ -17,6 +19,7 @@ html {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+
   /* Prevent horizontal overflow */
 }
 
@@ -38,12 +41,14 @@ p {
 p a {
   color: #fff;
   text-decoration: none;
+
   /* Optional: remove underline */
   transition: color 0.3s ease;
 }
 
 p a:hover {
   color: #00d4ff;
+
   /* Optional: change on hover */
 }
 
@@ -65,11 +70,13 @@ nav {
   top: 0;
   width: 100%;
   z-index: 10;
-  background-color: rgba(0, 0, 0, 0.95);
+  background-color: rgb(0 0 0 / 95%);
   height: 70px;
+
   /* Keep the navbar height */
   display: flex;
   align-items: center;
+
   /* Align items in the middle vertically */
 }
 
@@ -81,12 +88,14 @@ nav {
 .nav-container {
   display: flex;
   align-items: center;
+
   /* Ensures vertical centering */
   justify-content: space-between;
   width: 90%;
   max-width: 1400px;
   margin: 0 auto;
   height: 100%;
+
   /* Ensure full height */
 }
 
@@ -94,6 +103,7 @@ nav {
 .nav-logo {
   display: flex;
   align-items: center;
+
   /* Vertically center */
   text-decoration: none;
   margin-right: 20px;
@@ -103,18 +113,21 @@ nav {
 .nav-logo h1 {
   position: absolute;
   left: -9999px;
+
   /* Off-screen but readable by search engines */
   top: -9999px;
   width: 1px;
   height: 1px;
   overflow: hidden;
-  opacity: 0;
+  opacity: 0%;
 }
 
 .nav-logo img {
   width: 100px;
+
   /* Adjusted size */
   height: 100px;
+
   /* Adjusted size */
   border-radius: 50%;
   transition: transform 0.2s ease;
@@ -132,8 +145,10 @@ nav {
   display: flex;
   align-items: center;
   justify-content: flex-end;
+
   /* Push items to the right */
   position: relative;
+
   /* Ensure child elements like the hamburger are positioned correctly */
   width: 100%;
 }
@@ -148,9 +163,11 @@ nav {
   font-weight: bold;
   font-size: 18px;
   padding: 10px 0;
+
   /* Add vertical padding */
   display: flex;
   align-items: center;
+
   /* Ensure links are centered vertically */
   height: 100%;
   transition: all 0.3s ease-in-out;
@@ -163,8 +180,10 @@ nav {
 
 .nav-container ul li a.active {
   color: #00d4ff;
+
   /* Highlighted color */
   border-bottom: 3px solid #00d4ff;
+
   /* Underline for visual indication */
   font-weight: bold;
 }
@@ -180,6 +199,7 @@ nav {
   top: 50%;
   right: 20px;
   transform: translateY(-50%);
+
   /* Ensure it stays in the middle */
   z-index: 9999;
 }
@@ -194,16 +214,19 @@ nav {
 
 .hamburger.open span:nth-child(1) {
   transform: rotate(45deg) translate(10px, 10px);
+
   /* Top bar rotates into the upper diagonal */
 }
 
 .hamburger.open span:nth-child(2) {
-  opacity: 0;
+  opacity: 0%;
+
   /* Middle bar disappears */
 }
 
 .hamburger.open span:nth-child(3) {
   transform: rotate(-45deg) translate(5px, -5px);
+
   /* Bottom bar rotates into the lower diagonal */
 }
 
@@ -219,8 +242,10 @@ section {
 #home {
   position: relative;
   height: 100vh;
+
   /* Full viewport height */
   overflow: hidden;
+
   /* Prevent overflow of the canvas */
 }
 
@@ -231,6 +256,7 @@ section {
   transform: translate(-50%, -50%);
   text-align: center;
   z-index: 1;
+
   /* Ensure it appears above the canvas */
 }
 
@@ -259,6 +285,7 @@ section {
   width: 100%;
   height: 100%;
   z-index: 0;
+
   /* Ensure the canvas stays behind other content */
 }
 
@@ -266,6 +293,7 @@ section {
 #about {
   margin: 0;
   padding: 50px 10%;
+
   /* Adjust as needed */
 }
 
@@ -337,7 +365,7 @@ section {
 
 /* EDUCATION SECTION */
 #education {
-  background-color: #000000;
+  background-color: #000;
   color: white;
   padding: 50px 10%;
   text-align: center;
@@ -360,7 +388,7 @@ section {
   padding: 20px;
   background-color: #252525;
   border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 10px rgb(0 0 0 / 50%);
 }
 
 .education-item h3 {
@@ -377,7 +405,7 @@ section {
 
 /* PROJECTS SECTION */
 #projects {
-  background-color: #000000;
+  background-color: #000;
   color: white;
   padding: 50px 10%;
   text-align: center;
@@ -396,6 +424,7 @@ section {
 
 .project-category ul li {
   padding-left: 3.5em;
+
   /* Desired indent */
   position: relative;
 }
@@ -406,31 +435,39 @@ section {
   left: 0;
   top: 0;
   color: inherit;
+
   /* Bullet color same as text */
   padding-left: 1em;
 }
 
 iframe {
   border: none;
+
   /* Removes default border */
   outline: none;
+
   /* Ensures no outline is added */
 }
 
 .iframe-container {
   display: flex;
   flex-wrap: wrap;
+
   /* Allow the games to wrap to the next row on small screens */
   justify-content: center;
+
   /* Center the iframes horizontally */
   gap: 10px;
+
   /* Add spacing between the iframes */
 }
 
 .iframe-container iframe {
   max-width: 100%;
+
   /* Ensure the iframe doesn't overflow */
   height: auto;
+
   /* Adjust the height proportionally */
 }
 
@@ -444,6 +481,7 @@ iframe {
   list-style-type: none;
   padding: 0;
   list-style: none;
+
   /* Remove default bullets */
   padding-left: 0;
 }
@@ -482,7 +520,7 @@ iframe {
 .article-card {
   background: #181818;
   border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 16px rgb(0 0 0 / 30%);
   padding: 20px;
   max-width: 340px;
   text-align: left;
@@ -516,7 +554,7 @@ iframe {
 .article-title {
   font-size: 1.2rem;
   color: #00d4ff;
-  margin: 0 0 10px 0;
+  margin: 0 0 10px;
 }
 
 .article-desc {
@@ -524,27 +562,30 @@ iframe {
   font-size: 1rem;
   margin: 0;
 }
+
 /* CONTACT SECTION */
 .author {
   width: 100%;
   text-align: center;
   background-color: transparent;
+
   /* or your preferred background */
   position: relative;
+
   /* or static */
   font-size: 0.95rem;
   margin-top: 25px;
 }
 
 .author a {
-  color: #ffffff;
+  color: #fff;
   text-decoration: none;
   transition: color 0.3s;
 }
 
 .author a:hover {
   text-decoration: underline;
-  color: #ffffff;
+  color: #fff;
 }
 
 #contact {
@@ -620,24 +661,30 @@ iframe {
 
 #nav-links {
   display: flex;
+
   /* Horizontal display */
   list-style: none;
+
   /* Remove default bullets */
   margin: 0;
   padding: 0;
   justify-content: flex-end;
+
   /* Push menu items to the right */
   width: 100%;
+
   /* Ensure it spans the full width */
 }
 
 #nav-links li {
   margin-left: 20px;
+
   /* Add spacing between menu items */
 }
 
 #nav-links a {
   text-decoration: none;
+
   /* Remove underline */
   color: white;
   font-weight: bold;
@@ -656,6 +703,7 @@ iframe {
 @media (max-width: 768px) {
   .hamburger {
     display: flex;
+
     /* Show the hamburger on smaller screens */
   }
 
@@ -668,26 +716,35 @@ iframe {
 
   #nav-links {
     display: none;
+
     /* Hide menu initially */
     position: absolute;
+
     /* Allow it to slide down */
     top: 60px;
+
     /* Place it below the navbar */
     left: 0;
+
     /* Start from the left edge */
     width: 100%;
+
     /* Span the entire width of the screen */
-    background-color: rgba(0, 0, 0, 0.95);
+    background-color: rgb(0 0 0 / 95%);
+
     /* Menu background */
     flex-direction: column;
+
     /* Stack items vertically */
     align-items: center;
+
     /* Center align items */
     padding: 10px 0;
   }
 
   #nav-links.active {
     display: flex;
+
     /* Show menu when active */
   }
 
@@ -695,11 +752,13 @@ iframe {
   .nav-container ul {
     position: absolute;
     top: 60px;
+
     /* Just below the fixed nav bar */
     left: 0;
     width: 100%;
+
     /* Full width menu */
-    background-color: rgba(0, 0, 0, 0.95);
+    background-color: rgb(0 0 0 / 95%);
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
@@ -710,7 +769,7 @@ iframe {
            Also hide pointer events & fade it out. */
     transform: translateY(-100%);
     pointer-events: none;
-    opacity: 0;
+    opacity: 0%;
     transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
   }
 
@@ -718,7 +777,7 @@ iframe {
   .nav-container ul.active {
     transform: translateY(0);
     pointer-events: auto;
-    opacity: 1;
+    opacity: 100%;
   }
 
   .nav-container ul li {
@@ -787,20 +846,24 @@ iframe {
 }
 
 /* Custom Scrollbar Styles (Desktop & Mobile) */
+
 /* Hide scrollbar background, remove buttons, style thumb */
 ::-webkit-scrollbar {
   width: 5px;
   background: transparent !important;
 }
+
 ::-webkit-scrollbar-thumb {
-  background: rgba(40, 40, 40, 0.8);
+  background: rgb(40 40 40 / 80%);
   border-radius: 6px;
   transition: opacity 0.3s;
-  opacity: 1;
+  opacity: 100%;
 }
+
 ::-webkit-scrollbar-track {
   background: transparent !important;
 }
+
 ::-webkit-scrollbar-button {
   display: none;
   height: 0;
@@ -809,38 +872,33 @@ iframe {
 
 /* Hide thumb when not scrolling (desktop & mobile) */
 body:not(:hover) ::-webkit-scrollbar-thumb {
-  opacity: 0;
+  opacity: 0%;
 }
+
 body:active ::-webkit-scrollbar-thumb,
 body:hover ::-webkit-scrollbar-thumb {
-  opacity: 1;
+  opacity: 100%;
 }
 
 /* For Firefox */
 html {
   scrollbar-width: thin;
-  scrollbar-color: rgba(40, 40, 40, 0.8) transparent;
+  scrollbar-color: rgb(40 40 40 / 80%) transparent;
 }
 
 @media (max-width: 768px) {
   ::-webkit-scrollbar {
     width: 5px;
   }
+
   ::-webkit-scrollbar-thumb {
-    background: rgba(40, 40, 40, 0.8);
+    background: rgb(40 40 40 / 80%);
     border-radius: 6px;
   }
+
   html {
     scrollbar-width: thin;
-    scrollbar-color: rgba(40, 40, 40, 0.8) transparent;
+    scrollbar-color: rgb(40 40 40 / 80%) transparent;
   }
 }
-
-
-
-
-
-
-
-
 
