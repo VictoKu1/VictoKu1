@@ -5,64 +5,127 @@
  */
 
 /**
- * scrollToSection
- * ----------------
- * Smoothly scrolls the page to the specified section.
+ * Handles menu highlighting based on scroll position
+ * Manages active section detection and smooth scrolling
  */
-function scrollToSection(sectionId) {
-  const section = document.querySelector(sectionId);
-  if (section) {
-    section.scrollIntoView({ behavior: "smooth" });
-  }
-}
 
-// Wait for the DOM to fully load before executing
-document.addEventListener("DOMContentLoaded", () => {
-  const sections = document.querySelectorAll("section");
-  const navLinks = document.querySelectorAll("nav ul li a");
-  const navList = document.getElementById("nav-links");
+class MenuHighlighter {
+    constructor() {
+        this.sections = document.querySelectorAll("section[id]");
+        this.navLinks = document.querySelectorAll(".nav-list a");
+        this.scrollThreshold = 50;
+        this.lastScrollTop = 0;
+        this.isScrolling = false;
+        this.scrollTimeout = null;
 
-  /**
-   * updateActiveLink
-   * ----------------
-   * Determines which section is currently in view and updates the active
-   * class on the corresponding navigation link.
-   */
-  const updateActiveLink = () => {
-    let currentSection = "";
-
-    // Loop through each section to determine the current section in view.
-    sections.forEach((section) => {
-      const sectionTop = section.offsetTop;
-      const sectionHeight = section.offsetHeight;
-      if (window.scrollY >= sectionTop - sectionHeight / 3) {
-        currentSection = section.getAttribute("id");
-      }
-    });
-
-    // Handle the bottom of the page by ensuring the "contact" section is active.
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-      currentSection = "contact";
+        this.init();
     }
 
-    // Update the active class on navigation links.
-    navLinks.forEach((link) => {
-      link.classList.remove("active");
-      if (link.getAttribute("href").substring(1) === currentSection) {
-        link.classList.add("active");
-      }
-    });
-  };
+    /**
+     * Initialize event listeners
+     */
+    init() {
+        window.addEventListener("scroll", () => this.handleScroll());
+        this.navLinks.forEach(link => {
+            link.addEventListener("click", (e) => this.handleNavClick(e));
+        });
+    }
 
-  // Attach the updateActiveLink function to the scroll event.
-  window.addEventListener("scroll", updateActiveLink);
+    /**
+     * Handle scroll events with throttling
+     */
+    handleScroll() {
+        if (this.isScrolling) return;
+        
+        this.isScrolling = true;
+        requestAnimationFrame(() => {
+            this.updateActiveSection();
+            this.isScrolling = false;
+        });
+    }
 
-  // OPTIONAL: Close the mobile menu when a navigation link is clicked.
-  navLinks.forEach((link) => {
-    link.addEventListener("click", () => {
-      navList.classList.remove("active");
-    });
-  });
+    /**
+     * Update active section based on scroll position
+     */
+    updateActiveSection() {
+        const scrollPosition = window.scrollY + this.scrollThreshold;
+        
+        this.sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.offsetHeight;
+            const sectionId = section.getAttribute("id");
+            
+            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                this.setActiveLink(sectionId);
+            }
+        });
+    }
+
+    /**
+     * Set active navigation link
+     * @param {string} sectionId - ID of the active section
+     */
+    setActiveLink(sectionId) {
+        this.navLinks.forEach(link => {
+            const href = link.getAttribute("href");
+            const isActive = href === `#${sectionId}`;
+            
+            link.classList.toggle("active", isActive);
+            link.setAttribute("aria-current", isActive ? "page" : null);
+        });
+    }
+
+    /**
+     * Handle navigation link clicks
+     * @param {Event} event - Click event
+     */
+    handleNavClick(event) {
+        const href = event.currentTarget.getAttribute("href");
+        if (href.startsWith("#")) {
+            event.preventDefault();
+            this.scrollToSection(href.substring(1));
+        }
+    }
+
+    /**
+     * Smooth scroll to section
+     * @param {string} sectionId - ID of the section to scroll to
+     */
+    scrollToSection(sectionId) {
+        const section = document.getElementById(sectionId);
+        if (!section) return;
+
+        const sectionTop = section.offsetTop;
+        const currentScroll = window.pageYOffset;
+        const distance = sectionTop - currentScroll;
+        const duration = 500;
+        const startTime = performance.now();
+
+        const animateScroll = (currentTime) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            
+            // Easing function for smooth animation
+            const easeInOutCubic = progress => {
+                return progress < 0.5
+                    ? 4 * progress * progress * progress
+                    : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+            };
+
+            window.scrollTo(0, currentScroll + distance * easeInOutCubic(progress));
+
+            if (progress < 1) {
+                requestAnimationFrame(animateScroll);
+            }
+        };
+
+        requestAnimationFrame(animateScroll);
+    }
+}
+
+// Initialize on DOM content loaded
+document.addEventListener("DOMContentLoaded", () => {
+    new MenuHighlighter();
 });
 
 /**
