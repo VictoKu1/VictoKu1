@@ -25,8 +25,8 @@ const utils = {
      */
     sanitizeText(text) {
         const div = document.createElement("div");
-        div.textContent = text;
-        return div.innerHTML;
+    div.textContent = text;
+    return div.innerHTML;
     },
 
     /**
@@ -35,12 +35,12 @@ const utils = {
      * @returns {string} Sanitized URL or fallback
      */
     sanitizeUrl(url) {
-        try {
-            const parsed = new URL(url);
-            return parsed.href;
-        } catch {
+    try {
+      const parsed = new URL(url);
+      return parsed.href;
+    } catch {
             return "#";
-        }
+    }
     },
 
     /**
@@ -78,19 +78,19 @@ const utils = {
         const safeLink = this.sanitizeUrl(item.link);
         const safeDesc = this.sanitizeText(shortDesc);
 
-        return `
+          return `
             <div class="article-card pro">
-                <a href="${safeLink}" target="_blank" rel="noopener">
-                    <div class="article-image-wrapper">
+              <a href="${safeLink}" target="_blank" rel="noopener">
+                <div class="article-image-wrapper">
                         <img src="${imgSrc}" alt="Article image" class="article-image" onerror="this.src='${CONFIG.FALLBACK_IMAGE}'"/>
-                    </div>
-                    <div class="article-content">
-                        <h2 class="article-title">${safeTitle}</h2>
+                </div>
+                <div class="article-content">
+                  <h2 class="article-title">${safeTitle}</h2>
                         <p class="article-desc">${safeDesc}</p>
-                    </div>
-                </a>
+                </div>
+              </a>
             </div>
-        `;
+          `;
     }
 };
 

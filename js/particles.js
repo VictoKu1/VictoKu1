@@ -34,6 +34,23 @@ const SPEED_MULTIPLIER = 2.0; // Maximum speed multiplier for closest particles
 // Cached bounding rectangle for the canvas element
 let canvasRect = null;
 
+// Add touch interaction state variables
+let touchStartTime = 0;
+let touchStartX = 0;
+let touchStartY = 0;
+let touchHoldTimer = null;
+let isTouchHolding = false;
+const TOUCH_HOLD_DURATION = 1500; // 1.5 seconds in milliseconds
+const TOUCH_MOVE_THRESHOLD = 10; // pixels - if touch moves more than this, cancel hold
+
+// Edge scrolling variables
+let edgeScrollTimer = null;
+let currentEdgeScrollDirection = null;
+const EDGE_SCROLL_INTERVAL = 25; // milliseconds between scroll events (reduced from 50ms)
+const TOP_EDGE_THRESHOLD = 0.15; // 15% from top
+const BOTTOM_EDGE_THRESHOLD = 0.1; // 10% from bottom
+const SCROLL_SPEED = 4; // pixels per scroll event (increased from 2)
+
 /**
  * resizeCanvas
  * ------------
@@ -477,30 +494,182 @@ canvas.addEventListener("mousemove", (e) => {
   }
 });
 
-canvas.addEventListener("touchstart", handleTouch);
-canvas.addEventListener("touchmove", handleTouch);
-canvas.addEventListener("touchend", () => {
-  mouse.x = null;
-  mouse.y = null;
-});
-canvas.addEventListener("mouseout", () => {
-  mouse.x = null;
-  mouse.y = null;
-});
-
-/**
- * handleTouch
- * -----------
- * Processes touch events and updates the mouse coordinates.
- */
-function handleTouch(e) {
+canvas.addEventListener("touchstart", (e) => {
   if (!canvasRect) return;
   const scaleX = canvas.width / canvasRect.width;
   const scaleY = canvas.height / canvasRect.height;
   const touch = e.touches[0];
-  mouse.x = (touch.clientX - canvasRect.left) * scaleX;
-  mouse.y = (touch.clientY - canvasRect.top) * scaleY;
-}
+  
+  // Record touch start time and position
+  touchStartTime = Date.now();
+  touchStartX = touch.clientX;
+  touchStartY = touch.clientY;
+  isTouchHolding = false;
+  
+  // Clear any existing hold timer
+  if (touchHoldTimer) {
+    clearTimeout(touchHoldTimer);
+    touchHoldTimer = null;
+  }
+  
+  // Set a timer to activate particle interaction after 1.5 seconds
+  touchHoldTimer = setTimeout(() => {
+    if (!isTouchHolding) {
+      isTouchHolding = true;
+      e.preventDefault(); // Prevent scrolling only after hold is activated
+      
+      // Activate particle interaction
+      mouse.x = (touch.clientX - canvasRect.left) * scaleX;
+      mouse.y = (touch.clientY - canvasRect.top) * scaleY;
+      mouse.lastX = touch.clientX;
+      mouse.lastY = touch.clientY;
+      mouse.velocity = { x: 0, y: 0 };
+      mouse.isDown = true;
+      mouse.gravityCenter = { x: mouse.x, y: mouse.y };
+      mouse.mass = 100;
+    }
+  }, TOUCH_HOLD_DURATION);
+});
+
+canvas.addEventListener("touchmove", (e) => {
+  if (!canvasRect) return;
+  const scaleX = canvas.width / canvasRect.width;
+  const scaleY = canvas.height / canvasRect.height;
+  const touch = e.touches[0];
+  
+  // If we're already in hold mode (orbiting behavior active), update particle interaction
+  if (isTouchHolding) {
+    // Prevent default touch behavior to avoid browser's default scrolling interfering
+    e.preventDefault();
+    
+    const currentTime = performance.now();
+    const deltaTime = currentTime - mouse.lastMoveTime;
+    mouse.lastMoveTime = currentTime;
+
+    // Calculate touch velocity with time-based normalization
+    if (mouse.lastX !== null && mouse.lastY !== null) {
+      const timeFactor = Math.min(1, deltaTime / 16); // Normalize to 60fps
+      mouse.velocity.x = (touch.clientX - mouse.lastX) * scaleX * timeFactor;
+      mouse.velocity.y = (touch.clientY - mouse.lastY) * scaleY * timeFactor;
+    }
+
+    mouse.lastX = touch.clientX;
+    mouse.lastY = touch.clientY;
+
+    mouse.x = (touch.clientX - canvasRect.left) * scaleX;
+    mouse.y = (touch.clientY - canvasRect.top) * scaleY;
+
+    // Always update gravity center when in orbiting mode
+    if (mouse.isDown) {
+      mouse.gravityCenter = { x: mouse.x, y: mouse.y };
+    }
+    
+    // Handle edge scrolling during orbiting behavior
+    handleEdgeScrolling(touch.clientY);
+    
+    return; // Exit early, don't check for movement threshold
+  }
+  
+  // Only check movement threshold if we're not yet in hold mode
+  const touchMoveDistance = Math.sqrt(
+    Math.pow(touch.clientX - touchStartX, 2) + 
+    Math.pow(touch.clientY - touchStartY, 2)
+  );
+  
+  if (touchMoveDistance > TOUCH_MOVE_THRESHOLD) {
+    // Touch moved too far, cancel the hold timer
+    if (touchHoldTimer) {
+      clearTimeout(touchHoldTimer);
+      touchHoldTimer = null;
+    }
+    isTouchHolding = false;
+    
+    // If particle interaction was active, stop it
+    if (mouse.isDown) {
+      mouse.x = null;
+      mouse.y = null;
+      mouse.lastX = null;
+      mouse.lastY = null;
+      mouse.isDown = false;
+      mouse.gravityCenter = null;
+      mouse.velocity = { x: 0, y: 0 };
+      // Stop all orbiting particles
+      for (const particle of particles) {
+        particle.stopOrbit();
+      }
+    }
+    return; // Allow normal scrolling
+  }
+});
+
+canvas.addEventListener("touchend", (e) => {
+  // Clear the hold timer
+  if (touchHoldTimer) {
+    clearTimeout(touchHoldTimer);
+    touchHoldTimer = null;
+  }
+  
+  // Stop edge scrolling
+  stopEdgeScroll();
+  
+  // If we were in hold mode, stop particle interaction
+  if (isTouchHolding) {
+    e.preventDefault();
+    mouse.x = null;
+    mouse.y = null;
+    mouse.lastX = null;
+    mouse.lastY = null;
+    mouse.isDown = false;
+    mouse.gravityCenter = null;
+    mouse.velocity = { x: 0, y: 0 };
+    // Stop all orbiting particles
+    for (const particle of particles) {
+      particle.stopOrbit();
+    }
+    isTouchHolding = false;
+  }
+});
+
+canvas.addEventListener("touchcancel", (e) => {
+  // Clear the hold timer
+  if (touchHoldTimer) {
+    clearTimeout(touchHoldTimer);
+    touchHoldTimer = null;
+  }
+  
+  // Stop edge scrolling
+  stopEdgeScroll();
+  
+  // Stop particle interaction if it was active
+  if (isTouchHolding || mouse.isDown) {
+    mouse.x = null;
+    mouse.y = null;
+    mouse.lastX = null;
+    mouse.lastY = null;
+    mouse.isDown = false;
+    mouse.gravityCenter = null;
+    mouse.velocity = { x: 0, y: 0 };
+    // Stop all orbiting particles
+    for (const particle of particles) {
+      particle.stopOrbit();
+    }
+    isTouchHolding = false;
+  }
+});
+
+canvas.addEventListener("mouseout", () => {
+  mouse.x = null;
+  mouse.y = null;
+  mouse.lastX = null;
+  mouse.lastY = null;
+  mouse.isDown = false;
+  mouse.gravityCenter = null;
+  mouse.velocity = { x: 0, y: 0 };
+  // Stop all orbiting particles
+  for (const particle of particles) {
+    particle.stopOrbit();
+  }
+});
 
 // Update canvas and reinitialize particles on window resize
 window.addEventListener("resize", () => {
@@ -539,16 +708,49 @@ canvas.addEventListener("mouseup", () => {
   }
 });
 
-canvas.addEventListener("mouseout", () => {
-  mouse.x = null;
-  mouse.y = null;
-  mouse.lastX = null;
-  mouse.lastY = null;
-  mouse.isDown = false;
-  mouse.gravityCenter = null;
-  mouse.velocity = { x: 0, y: 0 };
-  // Stop all orbiting particles
-  for (const particle of particles) {
-    particle.stopOrbit();
+/**
+ * Start edge scrolling if not already active
+ */
+function startEdgeScroll(direction) {
+  if (edgeScrollTimer && currentEdgeScrollDirection === direction) return; // Already scrolling in this direction
+  stopEdgeScroll(); // Stop any previous scroll
+  currentEdgeScrollDirection = direction;
+  edgeScrollTimer = setInterval(() => {
+    if (direction === 'up') {
+      window.scrollBy(0, -SCROLL_SPEED);
+    } else if (direction === 'down') {
+      window.scrollBy(0, SCROLL_SPEED);
+    }
+  }, EDGE_SCROLL_INTERVAL);
+}
+
+/**
+ * Stop edge scrolling
+ */
+function stopEdgeScroll() {
+  if (edgeScrollTimer) {
+    clearInterval(edgeScrollTimer);
+    edgeScrollTimer = null;
+    currentEdgeScrollDirection = null;
   }
-});
+}
+
+/**
+ * Check if touch is in edge zones and handle scrolling
+ */
+function handleEdgeScrolling(touchY) {
+  const screenHeight = window.innerHeight;
+  const topEdge = screenHeight * TOP_EDGE_THRESHOLD;
+  const bottomEdge = screenHeight * (1 - BOTTOM_EDGE_THRESHOLD);
+
+  if (touchY <= topEdge) {
+    // Touch is in top edge zone - scroll up
+    startEdgeScroll('up');
+  } else if (touchY >= bottomEdge) {
+    // Touch is in bottom edge zone - scroll down
+    startEdgeScroll('down');
+  } else {
+    // Not in any edge zone, stop scrolling
+    stopEdgeScroll();
+  }
+}
