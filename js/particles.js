@@ -341,51 +341,87 @@ function initParticles() {
 function connectParticles(highlightedParticles) {
   const maxDistance = 120;
   const maxDistanceSquared = maxDistance * maxDistance;
+  const cellSize = maxDistance;
+  const grid = {};
   const len = particles.length;
 
-  for (let a = 0; a < len; a++) {
-    for (let b = a + 1; b < len; b++) {
-      const dx = particles[a].x - particles[b].x;
-      const dy = particles[a].y - particles[b].y;
-      const distSq = dx * dx + dy * dy;
-      const isHighlighted =
-        highlightedParticles.includes(particles[a]) ||
-        highlightedParticles.includes(particles[b]);
+  // Helper to get grid key
+  function getCellKey(x, y) {
+    return `${Math.floor(x / cellSize)},${Math.floor(y / cellSize)}`;
+  }
 
-      if (distSq < maxDistanceSquared) {
-        // If mouse is down and we have a gravity center
-        if (mouse.isDown && mouse.gravityCenter) {
-          // Start orbit for both particles if they're close to the gravity center
-          const distA = Math.sqrt(
-            Math.pow(particles[a].x - mouse.gravityCenter.x, 2) +
-              Math.pow(particles[a].y - mouse.gravityCenter.y, 2)
-          );
-          const distB = Math.sqrt(
-            Math.pow(particles[b].x - mouse.gravityCenter.x, 2) +
-              Math.pow(particles[b].y - mouse.gravityCenter.y, 2)
-          );
+  // Place particles into grid cells
+  for (let i = 0; i < len; i++) {
+    const p = particles[i];
+    const key = getCellKey(p.x, p.y);
+    if (!grid[key]) grid[key] = [];
+    grid[key].push(i);
+  }
 
-          if (distA < mouse.radius) {
-            particles[a].startOrbit(
-              mouse.gravityCenter.x,
-              mouse.gravityCenter.y
-            );
-          }
-          if (distB < mouse.radius) {
-            particles[b].startOrbit(
-              mouse.gravityCenter.x,
-              mouse.gravityCenter.y
-            );
+  // Neighbor cell offsets (including self)
+  const neighborOffsets = [
+    [0, 0],
+    [1, 0],
+    [-1, 0],
+    [0, 1],
+    [0, -1],
+    [1, 1],
+    [1, -1],
+    [-1, 1],
+    [-1, -1],
+  ];
+
+  // Track pairs already checked
+  const checked = new Set();
+
+  for (let i = 0; i < len; i++) {
+    const pA = particles[i];
+    const cellX = Math.floor(pA.x / cellSize);
+    const cellY = Math.floor(pA.y / cellSize);
+    for (const [dx, dy] of neighborOffsets) {
+      const neighborKey = `${cellX + dx},${cellY + dy}`;
+      const neighborIndices = grid[neighborKey];
+      if (!neighborIndices) continue;
+      for (const j of neighborIndices) {
+        if (j <= i) continue; // Avoid double-checking pairs
+        const pB = particles[j];
+        const dx = pA.x - pB.x;
+        const dy = pA.y - pB.y;
+        const distSq = dx * dx + dy * dy;
+        const pairKey = i + "," + j;
+        if (distSq < maxDistanceSquared && !checked.has(pairKey)) {
+          checked.add(pairKey);
+          const isHighlighted =
+            highlightedParticles.includes(pA) ||
+            highlightedParticles.includes(pB);
+
+          // Orbit logic (unchanged)
+          if (distSq < maxDistanceSquared) {
+            if (mouse.isDown && mouse.gravityCenter) {
+              const distA = Math.sqrt(
+                Math.pow(pA.x - mouse.gravityCenter.x, 2) +
+                  Math.pow(pA.y - mouse.gravityCenter.y, 2)
+              );
+              const distB = Math.sqrt(
+                Math.pow(pB.x - mouse.gravityCenter.x, 2) +
+                  Math.pow(pB.y - mouse.gravityCenter.y, 2)
+              );
+              if (distA < mouse.radius) {
+                pA.startOrbit(mouse.gravityCenter.x, mouse.gravityCenter.y);
+              }
+              if (distB < mouse.radius) {
+                pB.startOrbit(mouse.gravityCenter.x, mouse.gravityCenter.y);
+              }
+            }
+            ctx.strokeStyle = isHighlighted
+              ? "rgba(255, 255, 255, 0.3)"
+              : "rgba(0, 170, 255, 0.1)";
+            ctx.beginPath();
+            ctx.moveTo(pA.x, pA.y);
+            ctx.lineTo(pB.x, pB.y);
+            ctx.stroke();
           }
         }
-
-        ctx.strokeStyle = isHighlighted
-          ? "rgba(255, 255, 255, 0.3)"
-          : "rgba(0, 170, 255, 0.1)";
-        ctx.beginPath();
-        ctx.moveTo(particles[a].x, particles[a].y);
-        ctx.lineTo(particles[b].x, particles[b].y);
-        ctx.stroke();
       }
     }
   }
@@ -499,25 +535,25 @@ canvas.addEventListener("touchstart", (e) => {
   const scaleX = canvas.width / canvasRect.width;
   const scaleY = canvas.height / canvasRect.height;
   const touch = e.touches[0];
-  
+
   // Record touch start time and position
   touchStartTime = Date.now();
   touchStartX = touch.clientX;
   touchStartY = touch.clientY;
   isTouchHolding = false;
-  
+
   // Clear any existing hold timer
   if (touchHoldTimer) {
     clearTimeout(touchHoldTimer);
     touchHoldTimer = null;
   }
-  
+
   // Set a timer to activate particle interaction after 1.5 seconds
   touchHoldTimer = setTimeout(() => {
     if (!isTouchHolding) {
       isTouchHolding = true;
       e.preventDefault(); // Prevent scrolling only after hold is activated
-      
+
       // Activate particle interaction
       mouse.x = (touch.clientX - canvasRect.left) * scaleX;
       mouse.y = (touch.clientY - canvasRect.top) * scaleY;
@@ -536,12 +572,12 @@ canvas.addEventListener("touchmove", (e) => {
   const scaleX = canvas.width / canvasRect.width;
   const scaleY = canvas.height / canvasRect.height;
   const touch = e.touches[0];
-  
+
   // If we're already in hold mode (orbiting behavior active), update particle interaction
   if (isTouchHolding) {
     // Prevent default touch behavior to avoid browser's default scrolling interfering
     e.preventDefault();
-    
+
     const currentTime = performance.now();
     const deltaTime = currentTime - mouse.lastMoveTime;
     mouse.lastMoveTime = currentTime;
@@ -563,19 +599,19 @@ canvas.addEventListener("touchmove", (e) => {
     if (mouse.isDown) {
       mouse.gravityCenter = { x: mouse.x, y: mouse.y };
     }
-    
+
     // Handle edge scrolling during orbiting behavior
     handleEdgeScrolling(touch.clientY);
-    
+
     return; // Exit early, don't check for movement threshold
   }
-  
+
   // Only check movement threshold if we're not yet in hold mode
   const touchMoveDistance = Math.sqrt(
-    Math.pow(touch.clientX - touchStartX, 2) + 
-    Math.pow(touch.clientY - touchStartY, 2)
+    Math.pow(touch.clientX - touchStartX, 2) +
+      Math.pow(touch.clientY - touchStartY, 2)
   );
-  
+
   if (touchMoveDistance > TOUCH_MOVE_THRESHOLD) {
     // Touch moved too far, cancel the hold timer
     if (touchHoldTimer) {
@@ -583,7 +619,7 @@ canvas.addEventListener("touchmove", (e) => {
       touchHoldTimer = null;
     }
     isTouchHolding = false;
-    
+
     // If particle interaction was active, stop it
     if (mouse.isDown) {
       mouse.x = null;
@@ -608,10 +644,10 @@ canvas.addEventListener("touchend", (e) => {
     clearTimeout(touchHoldTimer);
     touchHoldTimer = null;
   }
-  
+
   // Stop edge scrolling
   stopEdgeScroll();
-  
+
   // If we were in hold mode, stop particle interaction
   if (isTouchHolding) {
     e.preventDefault();
@@ -636,10 +672,10 @@ canvas.addEventListener("touchcancel", (e) => {
     clearTimeout(touchHoldTimer);
     touchHoldTimer = null;
   }
-  
+
   // Stop edge scrolling
   stopEdgeScroll();
-  
+
   // Stop particle interaction if it was active
   if (isTouchHolding || mouse.isDown) {
     mouse.x = null;
@@ -716,9 +752,9 @@ function startEdgeScroll(direction) {
   stopEdgeScroll(); // Stop any previous scroll
   currentEdgeScrollDirection = direction;
   edgeScrollTimer = setInterval(() => {
-    if (direction === 'up') {
+    if (direction === "up") {
       window.scrollBy(0, -SCROLL_SPEED);
-    } else if (direction === 'down') {
+    } else if (direction === "down") {
       window.scrollBy(0, SCROLL_SPEED);
     }
   }, EDGE_SCROLL_INTERVAL);
@@ -745,10 +781,10 @@ function handleEdgeScrolling(touchY) {
 
   if (touchY <= topEdge) {
     // Touch is in top edge zone - scroll up
-    startEdgeScroll('up');
+    startEdgeScroll("up");
   } else if (touchY >= bottomEdge) {
     // Touch is in bottom edge zone - scroll down
-    startEdgeScroll('down');
+    startEdgeScroll("down");
   } else {
     // Not in any edge zone, stop scrolling
     stopEdgeScroll();
