@@ -78,11 +78,18 @@ window.addEventListener("scroll", () => {
 });
 
 /**
- * Particle Class
- * --------------
- * Represents an individual particle.
+ * Particle
+ * -----
+ * Represents an individual particle in the system, with physics for movement, orbiting, and border collision.
  */
 class Particle {
+  /**
+   * @param {number} x - Initial x position
+   * @param {number} y - Initial y position
+   * @param {number} dx - Initial x velocity
+   * @param {number} dy - Initial y velocity
+   * @param {number} size - Particle radius
+   */
   constructor(x, y, dx, dy, size) {
     this.x = x;
     this.y = y;
@@ -101,11 +108,11 @@ class Particle {
     this.gravityStrength = 1;
     this.lastUpdateTime = 0;
     this.speedMultiplier = 1;
+    this.prevX = x;
+    this.prevY = y;
   }
 
   /**
-   * draw
-   * ----
    * Draws the particle. If highlighted is true, draws it in white.
    * @param {boolean} highlighted - Whether the particle should be highlighted.
    */
@@ -117,17 +124,20 @@ class Particle {
   }
 
   /**
-   * update
-   * ------
-   * Updates the particle's position and reverses its velocity if it hits canvas boundaries.
+   * Updates the particle's position and handles orbiting and border collision.
    */
   update() {
     const currentTime = performance.now();
     const deltaTime = currentTime - this.lastUpdateTime;
     this.lastUpdateTime = currentTime;
 
+    // Store previous position before updating (for release velocity)
+    this.prevX = this.x;
+    this.prevY = this.y;
+
     if (this.isOrbiting && mouse.gravityCenter) {
-      // Calculate distance and direction to gravity center
+      // --- Orbiting Physics ---
+      // Calculate vector from particle to gravity center
       const dx = mouse.gravityCenter.x - this.x;
       const dy = mouse.gravityCenter.y - this.y;
       const currentDistance = Math.sqrt(dx * dx + dy * dy);
@@ -138,33 +148,30 @@ class Particle {
         GRAVITY_FALLOFF
       );
 
-      // Calculate speed multiplier based on distance
-      // Closer particles move faster
+      // Calculate speed multiplier based on distance (closer = faster)
       const distanceRatio = 1 - this.initialOrbitRadius / MAX_ORBIT_RADIUS;
       this.speedMultiplier =
         1 + (SPEED_MULTIPLIER - 1) * Math.pow(distanceRatio, 2);
 
-      // Check if particle should escape orbit
+      // Escape orbit if too far
       if (this.initialOrbitRadius > MAX_ORBIT_RADIUS) {
         this.escapeOrbit();
         return;
       }
 
-      // Calculate escape velocity with distance-based gravity
+      // Calculate escape velocity
       const escapeVelocity = Math.sqrt(
         (2 * G * mouse.mass * this.gravityStrength) / this.initialOrbitRadius
       );
       const currentVelocity = Math.sqrt(
         this.velocity.x * this.velocity.x + this.velocity.y * this.velocity.y
       );
-
-      // If current velocity exceeds escape velocity, particle escapes
       if (currentVelocity > escapeVelocity * ESCAPE_VELOCITY_FACTOR) {
         this.escapeOrbit();
         return;
       }
 
-      // Update orbital speed based on initial distance (Kepler's laws)
+      // Update orbital speed (Kepler's law)
       const distanceFactor = Math.max(
         0.2,
         1 - this.initialOrbitRadius / MAX_ORBIT_RADIUS
@@ -176,12 +183,12 @@ class Particle {
         ) *
         ORBIT_SPEED_FACTOR *
         distanceFactor *
-        this.speedMultiplier; // Apply speed multiplier to orbital speed
+        this.speedMultiplier;
 
-      // Update orbital position
+      // Advance orbit angle
       this.orbitAngle += this.orbitSpeed;
 
-      // Calculate target position maintaining initial orbit radius
+      // Target position on the orbit
       const targetX =
         mouse.gravityCenter.x +
         Math.cos(this.orbitAngle) * this.initialOrbitRadius;
@@ -189,29 +196,22 @@ class Particle {
         mouse.gravityCenter.y +
         Math.sin(this.orbitAngle) * this.initialOrbitRadius;
 
-      // Calculate current distance from target
+      // Move towards target position
       const distToTarget = Math.sqrt(
         Math.pow(targetX - this.x, 2) + Math.pow(targetY - this.y, 2)
       );
-
-      // Adjust movement strength based on distance from target and mouse velocity
       const moveStrength =
         RESPONSE_FACTOR *
         this.gravityStrength *
         (1 + distToTarget / this.initialOrbitRadius) *
         this.speedMultiplier;
-
-      // Move towards target position
       this.x += (targetX - this.x) * moveStrength;
       this.y += (targetY - this.y) * moveStrength;
 
-      // Add immediate mouse movement influence
+      // Add immediate mouse movement influence (perpendicular to radius)
       if (mouse.velocity.x !== 0 || mouse.velocity.y !== 0) {
-        // Calculate perpendicular force to maintain orbit
         const perpX = -dy / currentDistance;
         const perpY = dx / currentDistance;
-
-        // Apply mouse velocity with immediate response and speed multiplier
         const responseFactor = Math.min(1, deltaTime / 16); // Normalize to 60fps
         this.x +=
           (mouse.velocity.x * RESPONSE_FACTOR + perpX * 0.05) *
@@ -225,18 +225,36 @@ class Particle {
           this.speedMultiplier;
       }
     } else {
-      // Normal movement
-      if (this.x + this.size > canvas.width || this.x - this.size < 0) {
+      // --- Normal movement and border bounce ---
+      // Smooth elastic bounce with overshoot reflection
+      if (this.x + this.size > canvas.width) {
         this.dx *= -1;
+        const overshoot = this.x + this.size - canvas.width;
+        this.x = canvas.width - this.size - overshoot;
+      } else if (this.x - this.size < 0) {
+        this.dx *= -1;
+        const overshoot = this.size - this.x;
+        this.x = this.size + overshoot;
       }
-      if (this.y + this.size > canvas.height || this.y - this.size < 0) {
+      if (this.y + this.size > canvas.height) {
         this.dy *= -1;
+        const overshoot = this.y + this.size - canvas.height;
+        this.y = canvas.height - this.size - overshoot;
+      } else if (this.y - this.size < 0) {
+        this.dy *= -1;
+        const overshoot = this.size - this.y;
+        this.y = this.size + overshoot;
       }
       this.x += this.dx;
       this.y += this.dy;
     }
   }
 
+  /**
+   * Starts orbiting around a center point.
+   * @param {number} centerX
+   * @param {number} centerY
+   */
   startOrbit(centerX, centerY) {
     if (!this.isOrbiting) {
       this.isOrbiting = true;
@@ -244,27 +262,21 @@ class Particle {
       this.originalDy = this.dy;
       this.lastUpdateTime = performance.now();
 
-      // Calculate initial distance from center
+      // Calculate initial distance and angle from center
       const dx = this.x - centerX;
       const dy = this.y - centerY;
       this.initialOrbitRadius = Math.sqrt(dx * dx + dy * dy);
       this.orbitRadius = this.initialOrbitRadius;
-
-      // Calculate initial angle
       this.orbitAngle = Math.atan2(dy, dx);
 
-      // Calculate initial gravity strength
+      // Set up gravity and speed multipliers
       this.gravityStrength = Math.pow(
         1 - this.initialOrbitRadius / MAX_ORBIT_RADIUS,
         GRAVITY_FALLOFF
       );
-
-      // Calculate initial speed multiplier
       const distanceRatio = 1 - this.initialOrbitRadius / MAX_ORBIT_RADIUS;
       this.speedMultiplier =
         1 + (SPEED_MULTIPLIER - 1) * Math.pow(distanceRatio, 2);
-
-      // Calculate orbital speed based on initial distance (Kepler's laws)
       const distanceFactor = Math.max(
         0.2,
         1 - this.initialOrbitRadius / MAX_ORBIT_RADIUS
@@ -288,6 +300,30 @@ class Particle {
     }
   }
 
+  /**
+   * Releases the particle from orbit, setting its velocity to its current movement plus user input.
+   * @param {number} centerX - X coordinate of the gravity center at release.
+   * @param {number} centerY - Y coordinate of the gravity center at release.
+   */
+  releaseFromOrbit(centerX, centerY) {
+    if (this.isOrbiting) {
+      // Set velocity to actual movement vector from last update plus user input velocity
+      this.dx = this.x - this.prevX + mouse.velocity.x;
+      this.dy = this.y - this.prevY + mouse.velocity.y;
+      this.isOrbiting = false;
+      this.velocity = { x: 0, y: 0 };
+      this.gravityStrength = 1;
+      this.initialOrbitRadius = 0;
+      this.speedMultiplier = 1;
+    } else {
+      // fallback to normal stop
+      this.stopOrbit();
+    }
+  }
+
+  /**
+   * Releases the particle from orbit if it escapes, using its last orbit velocity.
+   */
   escapeOrbit() {
     this.isOrbiting = false;
     this.dx = this.velocity.x;
@@ -298,6 +334,9 @@ class Particle {
     this.speedMultiplier = 1;
   }
 
+  /**
+   * Stops orbiting and restores original velocity.
+   */
   stopOrbit() {
     if (this.isOrbiting) {
       this.isOrbiting = false;
@@ -657,11 +696,14 @@ canvas.addEventListener("touchend", (e) => {
     mouse.lastY = null;
     mouse.isDown = false;
     mouse.gravityCenter = null;
-    mouse.velocity = { x: 0, y: 0 };
-    // Stop all orbiting particles
+    // Release all orbiting particles with tangent velocity
     for (const particle of particles) {
-      particle.stopOrbit();
+      if (particle.isOrbiting) {
+        // Use last known gravity center
+        particle.releaseFromOrbit(touchStartX, touchStartY);
+      }
     }
+    mouse.velocity = { x: 0, y: 0 };
     isTouchHolding = false;
   }
 });
@@ -737,11 +779,14 @@ canvas.addEventListener("mousedown", (e) => {
 canvas.addEventListener("mouseup", () => {
   mouse.isDown = false;
   mouse.gravityCenter = null;
-  mouse.velocity = { x: 0, y: 0 };
-  // Stop all orbiting particles
+  // Release all orbiting particles with tangent velocity
   for (const particle of particles) {
-    particle.stopOrbit();
+    if (particle.isOrbiting) {
+      // Use last known gravity center
+      particle.releaseFromOrbit(mouse.lastX, mouse.lastY);
+    }
   }
+  mouse.velocity = { x: 0, y: 0 };
 });
 
 /**
