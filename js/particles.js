@@ -30,6 +30,8 @@ const GRAVITY_FALLOFF = 1.5; // How quickly gravity strength decreases with dist
 const ORBIT_MAINTENANCE_FACTOR = 0.95; // How strongly to maintain orbit radius
 const RESPONSE_FACTOR = 0.3; // How quickly particles respond to mouse movement
 const SPEED_MULTIPLIER = 2.0; // Maximum speed multiplier for closest particles
+const COLLISION_RESTITUTION = 0.8; // Bounciness factor for particle collisions (0-1)
+const COLLISION_DAMPING = 0.98; // Velocity damping after collision to prevent infinite bouncing
 
 // Cached bounding rectangle for the canvas element
 let canvasRect = null;
@@ -121,6 +123,70 @@ class Particle {
     ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
     ctx.fillStyle = highlighted ? "#ffffff" : "rgba(0, 170, 255, 0.5)";
     ctx.fill();
+  }
+
+  /**
+   * Checks for collision with another particle and handles bouncing physics
+   * Optimized version using squared distances to avoid expensive sqrt operations
+   * @param {Particle} other - The other particle to check collision with
+   */
+  checkCollision(other) {
+    const dx = this.x - other.x;
+    const dy = this.y - other.y;
+    const distanceSquared = dx * dx + dy * dy;
+    const minDistance = this.size + other.size;
+    const minDistanceSquared = minDistance * minDistance;
+
+    if (distanceSquared < minDistanceSquared && distanceSquared > 0) {
+      // Only calculate sqrt when collision is detected
+      const distance = Math.sqrt(distanceSquared);
+      const overlap = minDistance - distance;
+      
+      // Normalize collision vector (reuse distance calculation)
+      const invDistance = 1 / distance;
+      const nx = dx * invDistance;
+      const ny = dy * invDistance;
+      
+      // Separate particles to prevent overlap
+      const separation = overlap * 0.5;
+      const separationX = separation * nx;
+      const separationY = separation * ny;
+      
+      this.x += separationX;
+      this.y += separationY;
+      other.x -= separationX;
+      other.y -= separationY;
+      
+      // Calculate relative velocity
+      const relativeVelX = this.dx - other.dx;
+      const relativeVelY = this.dy - other.dy;
+      
+      // Calculate relative velocity in collision normal direction
+      const velAlongNormal = relativeVelX * nx + relativeVelY * ny;
+      
+      // Don't resolve if velocities are separating
+      if (velAlongNormal > 0) return;
+      
+      // Calculate impulse scalar with mass consideration
+      const restitutionFactor = -(1 + COLLISION_RESTITUTION);
+      const totalMass = this.mass + other.mass;
+      const impulseScalar = (restitutionFactor * velAlongNormal) / totalMass;
+      
+      // Apply impulse to velocities based on mass
+      const impulseX = impulseScalar * nx;
+      const impulseY = impulseScalar * ny;
+      
+      this.dx += impulseX * other.mass;
+      this.dy += impulseY * other.mass;
+      other.dx -= impulseX * this.mass;
+      other.dy -= impulseY * this.mass;
+      
+      // Apply damping to prevent infinite bouncing
+      this.dx *= COLLISION_DAMPING;
+      this.dy *= COLLISION_DAMPING;
+      other.dx *= COLLISION_DAMPING;
+      other.dy *= COLLISION_DAMPING;
+    }
   }
 
   /**
@@ -373,41 +439,35 @@ function initParticles() {
 /**
  * connectParticles
  * ----------------
- * Draws lines connecting particles that are within a specified distance.
- * Uses cached squared distances for efficiency.
+ * Optimized particle connection drawing with improved spatial partitioning.
  * @param {Array} highlightedParticles - Array of particles near the mouse.
  */
 function connectParticles(highlightedParticles) {
   const maxDistance = 120;
   const maxDistanceSquared = maxDistance * maxDistance;
   const cellSize = maxDistance;
-  const grid = {};
+  const grid = new Map(); // Use Map for better performance
   const len = particles.length;
+  
+  // Create a Set for faster highlighted particle lookups
+  const highlightedSet = new Set(highlightedParticles);
 
-  // Helper to get grid key
-  function getCellKey(x, y) {
-    return `${Math.floor(x / cellSize)},${Math.floor(y / cellSize)}`;
-  }
+  // Helper to get grid key - optimized
+  const getCellKey = (x, y) => `${(x / cellSize) | 0},${(y / cellSize) | 0}`;
 
   // Place particles into grid cells
   for (let i = 0; i < len; i++) {
     const p = particles[i];
     const key = getCellKey(p.x, p.y);
-    if (!grid[key]) grid[key] = [];
-    grid[key].push(i);
+    if (!grid.has(key)) {
+      grid.set(key, []);
+    }
+    grid.get(key).push(i);
   }
 
-  // Neighbor cell offsets (including self)
+  // Reduced neighbor offsets for better performance
   const neighborOffsets = [
-    [0, 0],
-    [1, 0],
-    [-1, 0],
-    [0, 1],
-    [0, -1],
-    [1, 1],
-    [1, -1],
-    [-1, 1],
-    [-1, -1],
+    [0, 0], [1, 0], [0, 1], [1, 1]
   ];
 
   // Track pairs already checked
@@ -415,51 +475,54 @@ function connectParticles(highlightedParticles) {
 
   for (let i = 0; i < len; i++) {
     const pA = particles[i];
-    const cellX = Math.floor(pA.x / cellSize);
-    const cellY = Math.floor(pA.y / cellSize);
+    const cellX = (pA.x / cellSize) | 0;
+    const cellY = (pA.y / cellSize) | 0;
+    
     for (const [dx, dy] of neighborOffsets) {
-      const neighborKey = `${cellX + dx},${cellY + dy}`;
-      const neighborIndices = grid[neighborKey];
+      const neighborKey = getCellKey((cellX + dx) * cellSize, (cellY + dy) * cellSize);
+      const neighborIndices = grid.get(neighborKey);
       if (!neighborIndices) continue;
-      for (const j of neighborIndices) {
+      
+      const neighborLen = neighborIndices.length;
+      for (let k = 0; k < neighborLen; k++) {
+        const j = neighborIndices[k];
         if (j <= i) continue; // Avoid double-checking pairs
+        
         const pB = particles[j];
         const dx = pA.x - pB.x;
         const dy = pA.y - pB.y;
         const distSq = dx * dx + dy * dy;
-        const pairKey = i + "," + j;
+        const pairKey = `${i},${j}`;
+        
         if (distSq < maxDistanceSquared && !checked.has(pairKey)) {
           checked.add(pairKey);
-          const isHighlighted =
-            highlightedParticles.includes(pA) ||
-            highlightedParticles.includes(pB);
+          const isHighlighted = highlightedSet.has(pA) || highlightedSet.has(pB);
 
           // Orbit logic (unchanged)
-          if (distSq < maxDistanceSquared) {
-            if (mouse.isDown && mouse.gravityCenter) {
-              const distA = Math.sqrt(
-                Math.pow(pA.x - mouse.gravityCenter.x, 2) +
-                  Math.pow(pA.y - mouse.gravityCenter.y, 2)
-              );
-              const distB = Math.sqrt(
-                Math.pow(pB.x - mouse.gravityCenter.x, 2) +
-                  Math.pow(pB.y - mouse.gravityCenter.y, 2)
-              );
-              if (distA < mouse.radius) {
-                pA.startOrbit(mouse.gravityCenter.x, mouse.gravityCenter.y);
-              }
-              if (distB < mouse.radius) {
-                pB.startOrbit(mouse.gravityCenter.x, mouse.gravityCenter.y);
-              }
+          if (mouse.isDown && mouse.gravityCenter) {
+            const distA = Math.sqrt(
+              Math.pow(pA.x - mouse.gravityCenter.x, 2) +
+                Math.pow(pA.y - mouse.gravityCenter.y, 2)
+            );
+            const distB = Math.sqrt(
+              Math.pow(pB.x - mouse.gravityCenter.x, 2) +
+                Math.pow(pB.y - mouse.gravityCenter.y, 2)
+            );
+            if (distA < mouse.radius) {
+              pA.startOrbit(mouse.gravityCenter.x, mouse.gravityCenter.y);
             }
-            ctx.strokeStyle = isHighlighted
-              ? "rgba(255, 255, 255, 0.3)"
-              : "rgba(0, 170, 255, 0.1)";
-            ctx.beginPath();
-            ctx.moveTo(pA.x, pA.y);
-            ctx.lineTo(pB.x, pB.y);
-            ctx.stroke();
+            if (distB < mouse.radius) {
+              pB.startOrbit(mouse.gravityCenter.x, mouse.gravityCenter.y);
+            }
           }
+          
+          ctx.strokeStyle = isHighlighted
+            ? "rgba(255, 255, 255, 0.3)"
+            : "rgba(0, 170, 255, 0.1)";
+          ctx.beginPath();
+          ctx.moveTo(pA.x, pA.y);
+          ctx.lineTo(pB.x, pB.y);
+          ctx.stroke();
         }
       }
     }
@@ -469,18 +532,19 @@ function connectParticles(highlightedParticles) {
 /**
  * connectMouse
  * ------------
- * Draws lines connecting the mouse position to nearby particles.
- * The line opacity is based on distance.
+ * Optimized mouse-to-particle connection drawing.
  * @param {Array} highlightedParticles - Array of particles near the mouse.
  */
 function connectMouse(highlightedParticles) {
   const maxDistanceSquared = mouse.radius * mouse.radius;
   const len = highlightedParticles.length;
+  
   for (let i = 0; i < len; i++) {
     const p = highlightedParticles[i];
     const dx = mouse.x - p.x;
     const dy = mouse.y - p.y;
     const distSq = dx * dx + dy * dy;
+    
     if (distSq < maxDistanceSquared) {
       const opacity = 1 - distSq / maxDistanceSquared;
       ctx.strokeStyle = `rgba(255, 255, 255, ${opacity})`;
@@ -495,45 +559,141 @@ function connectMouse(highlightedParticles) {
 /**
  * getHighlightedParticles
  * -------------------------
- * Returns an array of particles that are within the mouse radius.
+ * Optimized function to get particles within mouse radius using squared distances.
  * @returns {Array} An array of highlighted particles.
  */
 function getHighlightedParticles() {
   const highlightedParticles = [];
-  if (mouse.x !== null && mouse.y !== null) {
-    const radiusSq = mouse.radius * mouse.radius;
-    const len = particles.length;
-    for (let i = 0; i < len; i++) {
-      const p = particles[i];
-      const dx = mouse.x - p.x;
-      const dy = mouse.y - p.y;
-      if (dx * dx + dy * dy < radiusSq) {
-        highlightedParticles.push(p);
+  if (mouse.x === null || mouse.y === null) return highlightedParticles;
+  
+  const radiusSq = mouse.radius * mouse.radius;
+  const len = particles.length;
+  
+  for (let i = 0; i < len; i++) {
+    const p = particles[i];
+    const dx = mouse.x - p.x;
+    const dy = mouse.y - p.y;
+    const distSq = dx * dx + dy * dy;
+    
+    if (distSq < radiusSq) {
+      highlightedParticles.push(p);
+    }
+  }
+  
+  return highlightedParticles;
+}
+
+/**
+ * checkParticleCollisions
+ * ----------------------
+ * Optimized collision detection using spatial partitioning and squared distances.
+ * Reduced grid cell size and improved early exit conditions.
+ */
+function checkParticleCollisions() {
+  const maxCollisionDistance = 16; // Reduced from 20 for better performance
+  const cellSize = maxCollisionDistance;
+  const grid = new Map(); // Use Map instead of object for better performance
+  const len = particles.length;
+
+  // Pre-calculate squared distance for comparison
+  const maxDistanceSquared = maxCollisionDistance * maxCollisionDistance;
+
+  // Helper to get grid key - optimized string concatenation
+  const getCellKey = (x, y) => `${x | 0},${y | 0}`; // Use bitwise OR for faster floor
+
+  // Place particles into grid cells - only non-orbiting particles
+  for (let i = 0; i < len; i++) {
+    const p = particles[i];
+    if (p.isOrbiting) continue; // Skip orbiting particles early
+    
+    const key = getCellKey(p.x / cellSize, p.y / cellSize);
+    if (!grid.has(key)) {
+      grid.set(key, []);
+    }
+    grid.get(key).push(i);
+  }
+
+  // Reduced neighbor offsets - only check immediate neighbors
+  const neighborOffsets = [
+    [0, 0], [1, 0], [0, 1], [1, 1]
+  ];
+
+  // Use Set for faster lookups
+  const checked = new Set();
+
+  for (let i = 0; i < len; i++) {
+    const pA = particles[i];
+    if (pA.isOrbiting) continue;
+    
+    const cellX = (pA.x / cellSize) | 0;
+    const cellY = (pA.y / cellSize) | 0;
+    
+    for (const [dx, dy] of neighborOffsets) {
+      const neighborKey = getCellKey(cellX + dx, cellY + dy);
+      const neighborIndices = grid.get(neighborKey);
+      if (!neighborIndices) continue;
+      
+      const neighborLen = neighborIndices.length;
+      for (let k = 0; k < neighborLen; k++) {
+        const j = neighborIndices[k];
+        if (j <= i) continue;
+        
+        const pB = particles[j];
+        if (pB.isOrbiting) continue;
+        
+        // Use a more efficient pair key
+        const pairKey = i < j ? `${i},${j}` : `${j},${i}`;
+        if (checked.has(pairKey)) continue;
+        
+        checked.add(pairKey);
+        
+        // Quick distance check before expensive collision calculation
+        const dx = pA.x - pB.x;
+        const dy = pA.y - pB.y;
+        const distSq = dx * dx + dy * dy;
+        
+        if (distSq < maxDistanceSquared) {
+          pA.checkCollision(pB);
+        }
       }
     }
   }
-  return highlightedParticles;
 }
 
 /**
  * animate
  * -------
- * The main animation loop that clears the canvas, updates and draws particles,
- * and then draws connections between particles and between the mouse and particles.
+ * Optimized main animation loop with better performance characteristics.
  */
 function animate() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  const highlightedParticles = getHighlightedParticles();
+  
   const len = particles.length;
+  
+  // Update all particles first
+  for (let i = 0; i < len; i++) {
+    particles[i].update();
+  }
+  
+  // Check for particle-to-particle collisions
+  checkParticleCollisions();
+  
+  // Get highlighted particles once
+  const highlightedParticles = getHighlightedParticles();
+  const highlightedSet = new Set(highlightedParticles);
+  
+  // Draw all particles with optimized highlighting check
   for (let i = 0; i < len; i++) {
     const p = particles[i];
-    p.update();
-    p.draw(highlightedParticles.includes(p));
+    p.draw(highlightedSet.has(p));
   }
+  
+  // Draw connections
   connectParticles(highlightedParticles);
   if (mouse.x !== null && mouse.y !== null) {
     connectMouse(highlightedParticles);
   }
+  
   requestAnimationFrame(animate);
 }
 
