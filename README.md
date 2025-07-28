@@ -34,36 +34,36 @@ I'm a passionate Software Engineer and Unity Developer with a strong background 
 ## Projects
 
 ### Current Open Source Projects
-- **BabylonPiles**: Modular, open source, cross platform, offline first knowledge server that operates as emergency storage, storing, organizing, and serving critical resources like offline Wikipedia, medical guides, books, survival manuals, and technical documentation [GitHub](https://github.com/VictoKu1/babylonpiles)
-- **encycloped.ai (AI Moderated Encyclopedia)**: A community-driven, decentralized encyclopedia platform built with Flask and the ChatGPT API (Or any other LLM with an API) [GitHub](https://github.com/VictoKu1/encycloped.ai)
-- **Social Network Analyzer**:Flask-powered app that combines AI-driven insights with social media intelligent personality summaries using OpenAI’s cutting-edge models [GitHub](https://github.com/VictoKu1/Social-Network-Analyzer)
-- **QR Analyzer Flutter App**:Cross-platform Flutter app for analyzing QR codes with OpenAI for potential security risks [GitHub](https://github.com/VictoKu1/qr_analyzer)
+- **[BabylonPiles](https://github.com/VictoKu1/babylonpiles)**: Modular, open source, cross platform, offline first knowledge server that operates as emergency storage, storing, organizing, and serving critical resources like offline Wikipedia, medical guides, books, survival manuals, and technical documentation
+- **[encycloped.ai (AI Moderated Encyclopedia)](https://github.com/VictoKu1/encycloped.ai)**: A community-driven, decentralized encyclopedia platform built with Flask and the ChatGPT API (Or any other LLM with an API)
+- **[Social Network Analyzer](https://github.com/VictoKu1/Social-Network-Analyzer)**: Flask-powered app that combines AI-driven insights with social media intelligent personality summaries using OpenAI's cutting-edge models
+- **[QR Analyzer Flutter App](https://github.com/VictoKu1/qr_analyzer)**: Cross-platform Flutter app for analyzing QR codes with OpenAI for potential security risks
 
 ### Website Development
 
-- **Personal Portfolio Website**: Developed a personal portfolio website to showcase my skills, projects, and professional background using HTML, CSS, and JavaScript. [Website](https://victoku1.netlify.app/)
-- **TitanSphere Studios Website**: Designed and developed the official website for TitanSphere Studios, featuring studios latest games, and contact information, built with HTML, CSS, and JavaScript. [Website](https://titansphere.xyz/)
+- **[Personal Portfolio Website](https://victoku1.netlify.app/)**: Developed a personal portfolio website to showcase my skills, projects, and professional background using HTML, CSS, and JavaScript
+- **[TitanSphere Studios Website](https://titansphere.xyz/)**: Designed and developed the official website for TitanSphere Studios, featuring studios latest games, and contact information, built with HTML, CSS, and JavaScript
 
 ### Major Contributions
 
-- **NetworkX Library Contribution**: Implemented Coalition Formation in Multi-agent Systems [Pull Request #6364](https://github.com/networkx/networkx/pull/6364)
-- **API Traffic Security Classification**: Conducted research for Ariel Cyber Innovation Center Cisco Competition. [GitHub](https://github.com/VictoKu1/API_Security_Research)
-- **SCADA Cyber Attacks Detection**: Researched industrial power control system security. [GitHub](https://github.com/VictoKu1/IndustrialControlSystemCyberAttackDetectingCourse)
+- **[NetworkX Library Contribution](https://github.com/networkx/networkx/pull/6364)**: Implemented Coalition Formation in Multi Agent Systems
+- **[API Traffic Security Classification](https://github.com/VictoKu1/API_Security_Research)**: Conducted research for Ariel Cyber Innovation Center Cisco Competition
+- **[SCADA Cyber Attacks Detection](https://github.com/VictoKu1/IndustrialControlSystemCyberAttackDetectingCourse)**: Researched industrial power control system security
 
 ### Game Development
 
-- **SolveIt**: A casual puzzle mobile game (Under Development). [Mobile Public Testing](https://victoku1.itch.io/solveit)
-- **Cuble**: WebGL and Mobile puzzle game. [Play Now](https://victoku1.itch.io/cuble)
-- **Dimensional**: A Unity WebGL video game. [Play Now](https://victoku1.itch.io/mazesimulation1)
-- **Jumper**: A Unity WebGL video game. [Play Now](https://victoku1.itch.io/jumper)
+- **[SolveIt](https://victoku1.itch.io/solveit)**: A casual puzzle mobile game (Under Development)
+- **[Cuble](https://victoku1.itch.io/cuble)**: WebGL and Mobile puzzle game
+- **[Dimensional](https://victoku1.itch.io/mazesimulation1)**: A Unity WebGL video game
+- **[Jumper](https://victoku1.itch.io/jumper)**: A Unity WebGL video game
 
 ### Other Projects
 
-- **Governmental Coalition Calculation System**: [GitHub](https://github.com/FairCoalitionCasesDistributionProject)
-- **MINIMAP Android App**: A location-based social security network. [GitHub](https://github.com/V-P-A-AppDev/MINIMAP)
-- **Evil Twin Attack and Defense in Python**: [GitHub](https://github.com/Wireless-Network-Security/Evil-Twin)
-- **Python Pip Packages Update Script in Linux**: [GitHub](https://github.com/VictoKu1/PythonPipPackagesUpdateScript)
-- **Many Other Projects.....**: [GitHub](https://github.com/VictoKu1?tab=repositories)
+- **[Governmental Coalition Calculation System](https://github.com/FairCoalitionCasesDistributionProject)**: Fair governmental coalition distributions and power sharing calculation system
+- **[MINIMAP Android App](https://github.com/V-P-A-AppDev/MINIMAP)**: A location-based social security network
+- **[Evil Twin Attack and Defense in Python](https://github.com/Wireless-Network-Security/Evil-Twin)**: Research project of wireless network security attacks and defense mechanisms
+- **[Python Pip Packages Update Script in Linux](https://github.com/VictoKu1/PythonPipPackagesUpdateScript)**: Automated script for updating Python pip packages on Linux systems
+- **Many Other Projects.....**: Collection of various software development and research projects [GitHub](https://github.com/VictoKu1?tab=repositories)
 
 ## Languages
 
