@@ -15,21 +15,12 @@ const CONFIG = {
     LOAD_ERROR: "Unable to load articles at this time. Please try again later.",
     NETWORK_ERROR: "Network error occurred. Please check your connection.",
   },
+  ALLOWED_LINK_PROTOCOLS: new Set(["https:"]),
+  ALLOWED_IMAGE_PROTOCOLS: new Set(["https:"]),
 };
 
 // Utility functions
 const utils = {
-  /**
-   * Sanitizes text content to prevent XSS
-   * @param {string} text - Text to sanitize
-   * @returns {string} Sanitized text
-   */
-  sanitizeText(text) {
-    const div = document.createElement("div");
-    div.textContent = text;
-    return div.innerHTML;
-  },
-
   /**
    * Sanitizes and validates URLs
    * @param {string} url - URL to sanitize
@@ -37,10 +28,30 @@ const utils = {
    */
   sanitizeUrl(url) {
     try {
-      const parsed = new URL(url);
+      const parsed = new URL(url, window.location.origin);
+      if (!CONFIG.ALLOWED_LINK_PROTOCOLS.has(parsed.protocol)) {
+        return null;
+      }
       return parsed.href;
     } catch {
-      return "#";
+      return null;
+    }
+  },
+
+  /**
+   * Sanitizes image URL and falls back when invalid.
+   * @param {string} url - Image URL to validate
+   * @returns {string} Safe image URL
+   */
+  sanitizeImageUrl(url) {
+    try {
+      const parsed = new URL(url, window.location.origin);
+      if (!CONFIG.ALLOWED_IMAGE_PROTOCOLS.has(parsed.protocol)) {
+        return CONFIG.FALLBACK_IMAGE;
+      }
+      return parsed.href;
+    } catch {
+      return CONFIG.FALLBACK_IMAGE;
     }
   },
 
@@ -75,25 +86,50 @@ const utils = {
    * @returns {string} HTML string
    */
   createArticleCard(item) {
-    const imgSrc = this.extractImageUrl(item.content);
+    const imgSrc = this.sanitizeImageUrl(this.extractImageUrl(item.content));
     const shortDesc = this.extractDescription(item);
-    const safeTitle = this.sanitizeText(item.title);
+    const safeTitle = item.title || "Untitled article";
     const safeLink = this.sanitizeUrl(item.link);
-    const safeDesc = this.sanitizeText(shortDesc);
+    const safeDesc = shortDesc || "Read more...";
 
-    return `
-            <div class="article-card pro">
-              <a href="${safeLink}" target="_blank" rel="noopener">
-                <div class="article-image-wrapper">
-                        <img src="${imgSrc}" alt="Article image" class="article-image" onerror="this.src='${CONFIG.FALLBACK_IMAGE}'"/>
-                </div>
-                <div class="article-content">
-                  <h2 class="article-title">${safeTitle}</h2>
-                        <p class="article-desc">${safeDesc}</p>
-                </div>
-              </a>
-            </div>
-          `;
+    const card = document.createElement("div");
+    card.className = "article-card pro";
+
+    const link = document.createElement("a");
+    link.href = safeLink || "#";
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+
+    const imageWrapper = document.createElement("div");
+    imageWrapper.className = "article-image-wrapper";
+
+    const image = document.createElement("img");
+    image.src = imgSrc;
+    image.alt = "Article image";
+    image.className = "article-image";
+    image.addEventListener("error", () => {
+      image.src = CONFIG.FALLBACK_IMAGE;
+    });
+
+    const content = document.createElement("div");
+    content.className = "article-content";
+
+    const title = document.createElement("h2");
+    title.className = "article-title";
+    title.textContent = safeTitle;
+
+    const desc = document.createElement("p");
+    desc.className = "article-desc";
+    desc.textContent = safeDesc;
+
+    imageWrapper.appendChild(image);
+    content.appendChild(title);
+    content.appendChild(desc);
+    link.appendChild(imageWrapper);
+    link.appendChild(content);
+    card.appendChild(link);
+
+    return card;
   },
 };
 
@@ -112,7 +148,11 @@ class ArticleManager {
    * Shows loading state
    */
   showLoading() {
-    this.container.innerHTML = `<div class="article-loading">${CONFIG.LOADING_MESSAGE}</div>`;
+    this.container.replaceChildren();
+    const loading = document.createElement("div");
+    loading.className = "article-loading";
+    loading.textContent = CONFIG.LOADING_MESSAGE;
+    this.container.appendChild(loading);
   }
 
   /**
@@ -120,7 +160,11 @@ class ArticleManager {
    * @param {string} message - Error message to display
    */
   showError(message) {
-    this.container.innerHTML = `<div class="article-error">${message}</div>`;
+    this.container.replaceChildren();
+    const errorElement = document.createElement("div");
+    errorElement.className = "article-error";
+    errorElement.textContent = message;
+    this.container.appendChild(errorElement);
   }
 
   /**
@@ -133,10 +177,11 @@ class ArticleManager {
       return;
     }
 
-    this.container.innerHTML = articles
-      .slice(0, CONFIG.MAX_ARTICLES)
-      .map((item) => utils.createArticleCard(item))
-      .join("");
+    const fragment = document.createDocumentFragment();
+    articles.slice(0, CONFIG.MAX_ARTICLES).forEach((item) => {
+      fragment.appendChild(utils.createArticleCard(item));
+    });
+    this.container.replaceChildren(fragment);
   }
 
   /**
