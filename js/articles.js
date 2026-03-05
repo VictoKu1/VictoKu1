@@ -217,7 +217,28 @@ class ArticleManager {
 document.addEventListener("DOMContentLoaded", () => {
   try {
     const articleManager = new ArticleManager("medium-articles");
-    articleManager.fetchArticles();
+    const articlesSection = document.getElementById("articles");
+
+    if (!articlesSection || !("IntersectionObserver" in window)) {
+      articleManager.fetchArticles();
+      return;
+    }
+
+    let hasLoaded = false;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !hasLoaded) {
+            hasLoaded = true;
+            articleManager.fetchArticles();
+            observer.disconnect();
+          }
+        });
+      },
+      { rootMargin: "200px 0px" }
+    );
+
+    observer.observe(articlesSection);
   } catch (error) {
     console.error("Failed to initialize article manager:", error);
   }

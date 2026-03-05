@@ -6,6 +6,11 @@
 
 const canvas = document.getElementById("particleCanvas");
 const ctx = canvas.getContext("2d");
+const prefersReducedMotion = window.matchMedia(
+  "(prefers-reduced-motion: reduce)"
+).matches;
+let isAnimationPaused = false;
+let animationFrameId = null;
 
 // Mouse and touch input configuration
 const mouse = {
@@ -419,13 +424,42 @@ class Particle {
 const particles = [];
 
 /**
+ * Returns an adaptive particle count based on device capabilities.
+ * Reduces CPU/GPU load on mobile and low-power devices.
+ * @returns {number}
+ */
+function getAdaptiveParticleCount() {
+  if (prefersReducedMotion) return 90;
+
+  let base = 265;
+  if (window.innerWidth <= 480) {
+    base = 120;
+  } else if (window.innerWidth <= 768) {
+    base = 170;
+  } else if (window.innerWidth <= 1024) {
+    base = 220;
+  }
+
+  const cores = navigator.hardwareConcurrency || 4;
+  if (cores <= 4) {
+    base = Math.floor(base * 0.75);
+  }
+
+  if ("deviceMemory" in navigator && navigator.deviceMemory <= 4) {
+    base = Math.floor(base * 0.8);
+  }
+
+  return Math.max(80, base);
+}
+
+/**
  * initParticles
  * -------------
- * Initializes the particles array with 265 particles at random positions and velocities.
+ * Initializes particles with adaptive count and random positions/velocities.
  */
 function initParticles() {
   particles.length = 0;
-  const particleCount = 265;
+  const particleCount = getAdaptiveParticleCount();
   for (let i = 0; i < particleCount; i++) {
     const size = Math.random() * 3 + 1;
     const x = Math.random() * canvas.width;
@@ -666,6 +700,11 @@ function checkParticleCollisions() {
  * Optimized main animation loop with better performance characteristics.
  */
 function animate() {
+  if (isAnimationPaused) {
+    animationFrameId = null;
+    return;
+  }
+
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   
   const len = particles.length;
@@ -694,7 +733,7 @@ function animate() {
     connectMouse(highlightedParticles);
   }
   
-  requestAnimationFrame(animate);
+  animationFrameId = requestAnimationFrame(animate);
 }
 
 /**
@@ -915,10 +954,36 @@ window.addEventListener("resize", () => {
   initParticles();
 });
 
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    isAnimationPaused = true;
+    if (animationFrameId) {
+      cancelAnimationFrame(animationFrameId);
+      animationFrameId = null;
+    }
+    return;
+  }
+
+  isAnimationPaused = false;
+  if (!animationFrameId) {
+    animate();
+  }
+});
+
 // Initial setup and start animation loop
 resizeCanvas();
 initParticles();
-animate();
+if (prefersReducedMotion) {
+  isAnimationPaused = true;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const highlightedParticles = getHighlightedParticles();
+  const highlightedSet = new Set(highlightedParticles);
+  for (let i = 0; i < particles.length; i++) {
+    particles[i].draw(highlightedSet.has(particles[i]));
+  }
+} else {
+  animate();
+}
 
 // Add mouse down/up event listeners
 canvas.addEventListener("mousedown", (e) => {
