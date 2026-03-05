@@ -1,3 +1,7 @@
+# Block repository/source documentation files from public access
+/*.md /404 404
+/*.MD /404 404
+
 # Redirect all 404 errors to homepage (optional, but good for single-page portfolios)
 404.html /index.html 301
 

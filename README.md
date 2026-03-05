@@ -40,8 +40,9 @@ I'm a passionate Software Engineer and Unity Developer with a strong background 
 
 ### Website Development
 
-- **[Personal Portfolio Website](https://victoku1.netlify.app/)**: Developed a personal portfolio website to showcase my skills, projects, and professional background using HTML, CSS, and JavaScript
-- **[TitanSphere Studios Website](https://titansphere.xyz/)**: Designed and developed the official website for TitanSphere Studios, featuring studios latest games, and contact information, built with HTML, CSS, and JavaScript
+- **[Personal Portfolio Website](https://victoku1.netlify.app/)**: Developed a personal portfolio website to showcase my skills, projects, and professional background
+- **[TitanSphere Studios Website](https://titansphere.xyz/)**: Designed and developed the official website for TitanSphere Studios, featuring studios latest games, and contact information
+- **[Unity Game Developement Course Website 2026](https://gamedevariel2026.netlify.app/)**: Course website for the 2026 Unity Game Development class at the School of Computer Science at Ariel University
 
 ### Major Contributions
 
