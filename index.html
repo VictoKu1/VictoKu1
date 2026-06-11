@@ -4,7 +4,7 @@
 <head>
     <!-- Security Headers -->
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; script-src 'self'; style-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; frame-src https://itch.io https://*.itch.io; connect-src 'self' https://api.rss2json.com; font-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+        content="default-src 'self'; script-src 'self' 'sha256-zfErwuIIlSqRTCTREAvTapawYGhoHrhOirj40VX3Dic='; style-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data: https:; frame-src https://itch.io https://*.itch.io; connect-src 'self' https://api.rss2json.com; font-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests; block-all-mixed-content;">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
     <meta http-equiv="X-XSS-Protection" content="1; mode=block">
@@ -25,14 +25,15 @@
         Виктор Кушнир, Виктор Кушнир Программист, Виктор Кушнир Программный Инженер, Виктор Кушнир Игры, Виктор Кушнир Юнити" />
     <meta property="og:title" content="Victor Kushnir - Software Engineer & Game Developer" />
     <meta property="og:description" content="Showcasing Victor Kushnir's projects, skills, and contact information." />
-    <meta property="og:image" content="media/p.jpg" />
+    <meta property="og:image" content="https://victoku1.netlify.app/media/p.jpg" />
     <meta property="og:url" content="https://victoku1.netlify.app/" />
     <meta name="robots" content="index, follow" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Victor Kushnir","url":"https://victoku1.netlify.app/","sameAs":["https://github.com/VictoKu1","https://linkedin.com/in/victoku1","https://victoku1.github.io/VictoKu1/"],"jobTitle":"Software Engineer & Game Developer","worksFor":{"@type":"Organization","name":"Independent Developer"}}</script>
     <!-- External Scripts -->
-    <script src="js/structuredData.js" defer></script>
-    <script src="js/particles.js" defer></script>
+    <script src="js/particles.js?v=20260612b" defer></script>
     <script src="js/interactions.js" defer></script>
     <script src="js/articles.js" defer></script>
+    <script src="js/articleTitleFit.js?v=20260612b" defer></script>
 
     <!-- Favicon and Alternate Links -->
     <link rel="icon" href="media/favicon.ico" type="image/x-icon" />
@@ -42,21 +43,18 @@
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
 
     <!-- Stylesheets -->
-    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/style.css?v=20260612c" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css" />
 </head>
 
 <body>
-    <!-- Navigation -->
-    <nav>
+    <nav class="site-nav">
         <div class="nav-container">
-            <a href="/" class="nav-logo">
-                <img src="media/faviconHD.ico" alt="Victor Kushnir Logo" />
-                <h1 class="sitename">VictoKu1</h1>
+            <a href="#home" class="nav-logo" aria-label="VictoKu1 home">
+                <img src="media/faviconHD.ico" alt="" />
             </a>
-            <div class="hamburger" id="hamburger-menu">
-                <!-- Hamburger Icon (3 Bars) -->
+            <div class="hamburger" id="hamburger-menu" aria-label="Open navigation" role="button" tabindex="0">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -72,25 +70,40 @@
         </div>
     </nav>
 
-    <!-- Home Section -->
-    <section id="home">
+    <section id="home" class="hero-section">
         <canvas id="particleCanvas"></canvas>
-        <div class="intro">
-            <h1>Hi, I'm Victor</h1>
-            <p>I'm A Software Engineer & Game Developer</p>
-            <button class="scroll-button" id="scroll-about">Who Am I?</button>
-
+        <div class="hero-overlay"></div>
+        <div class="hero-shell">
+            <div class="hero-copy">
+                <h1>Hi, I'm Victor</h1>
+                <p class="hero-lede">I'm A Software Engineer &amp; Game Developer</p>
+                <div class="hero-actions">
+                    <button class="button primary scroll-button" id="scroll-about" type="button">Who Am I?</button>
+                </div>
+            </div>
         </div>
     </section>
 
-    <!-- About Section -->
-    <section id="about">
-        <h1>About Me</h1>
-        <div class="about-container">
-            <!-- Skills & Technologies Icons -->
-            <div class="about-icons">
-                <h3>Skills & Technologies</h3>
-                <div class="icon-grid">
+    <section id="about" class="section-band">
+        <div class="section-shell about-layout">
+            <div class="profile-panel">
+                <picture>
+                    <source srcset="media/p.webp" type="image/webp" />
+                    <img src="media/p.jpg" alt="Victor Kushnir" loading="lazy" decoding="async" width="360" height="360" />
+                </picture>
+            </div>
+
+            <div class="about-copy">
+                <p class="section-kicker">About Me</p>
+                <h2>About Me</h2>
+                <p>
+                    Hi there, I'm Victor, I'm a passionate Software Engineer with a BSc in Computer Science and
+                    Mathematics. Skilled in Python, Java and Unity Video Games development, among other technologies, I
+                    specialize in creating interactive visualizations, innovative software solutions and immersive gaming
+                    experiences
+                </p>
+                <p class="intro-languages"><strong>Languages:</strong> English, Hebrew, Russian.</p>
+                <div class="skill-grid" aria-label="Skills and technologies">
                     <i class="fab fa-python" title="Python"></i>
                     <i class="fab fa-java" title="Java"></i>
                     <i class="fab fa-c" title="C"></i>
@@ -105,192 +118,180 @@
                     <i class="fab fa-css3-alt" title="CSS"></i>
                 </div>
             </div>
-            <!-- Photo and Description -->
-            <div class="about-photo">
-                <picture>
-                    <source srcset="media/p.webp" type="image/webp" />
-                    <img src="media/p.jpg" alt="Victor's Photo" loading="lazy" decoding="async" width="360" height="360" />
-                </picture>
-                <p>
-                    Hi there, I'm Victor, I'm a passionate Software Engineer
-                    with a BSc in Computer Science and Mathematics.
-                    Skilled in Python, Java and Unity Video Games development,
-                    among other technologies, I specialize in creating interactive visualizations,
-                    innovative software solutions and immersive gaming experiences.
-                </p>
-                <p class="intro-languages">
-                    <strong>Languages:</strong> English, Hebrew, Russian.
-                </p>
-            </div>
         </div>
     </section>
 
-    <!-- Education Section -->
-    <section id="education">
-        <h1>Education</h1>
-        <div class="education-container">
-            <div class="education-item">
+    <section id="education" class="section-band alt">
+        <div class="section-shell">
+            <p class="section-kicker">Education</p>
+            <h2>Academic background</h2>
+            <div class="education-card">
                 <h3>B.Sc in Computer Science and Mathematics</h3>
                 <p>Ariel University</p>
-                <p>October 2019 – September 2023</p>
+                <p>October 2019 - September 2023</p>
+            </div>
+            <div class="education-card">
+                <h3>M.Sc in Computer Science</h3>
+                <p>Ariel University</p>
+                <p>October 2025 - Present</p>
             </div>
         </div>
     </section>
 
-    <!-- Projects Section -->
-    <section id="projects">
-        <h1>Projects</h1>
-        <!-- Open Source Projects -->
-        <div class="project-category">
-            <h2>Open Source Projects</h2>
-            <ul>
-                <li>
-                    <a href="https://github.com/VictoKu1/babylonpiles" target="_blank" rel="noopener noreferrer">
-                        <strong>BabylonPiles:</strong>
-                    </a>
-                    Modular, open source, cross platform, offline first knowledge server that operates as emergency storage, storing, organizing, and serving critical resources like offline Wikipedia, medical guides, books, survival manuals, and technical documentation
-                </li>
-                <li>
-                    <a href="https://github.com/VictoKu1/encycloped.ai" target="_blank" rel="noopener noreferrer">
-                        <strong>encycloped.ai (AI Moderated Encyclopedia):</strong>
-                    </a>
-                    A community-driven, decentralized encyclopedia platform built with Flask and the ChatGPT API
-                </li>
-                <li>
-                    <a href="https://github.com/VictoKu1/Social-Network-Analyzer" target="_blank" rel="noopener noreferrer">
-                        <strong>Social Network Analyzer:</strong>
-                    </a>
-                    Flask-powered app that combines AI-driven insights with social media intelligent personality
-                    summaries using OpenAI's cutting-edge models
-                </li>
-                <li>
-                    <a href="https://github.com/VictoKu1/qr_analyzer" target="_blank" rel="noopener noreferrer">
-                        <strong>QR Analyzer Flutter App:</strong>
-                    </a>
-                    Cross-platform Flutter app for analyzing QR codes with OpenAI for potential security risks
-                </li>
-            </ul>
-        </div>
-        <!-- Website Development -->
-        <div class="project-category">
-            <h2>Website Development</h2>
-            <ul>
-                <li>
-                    <a href="https://victoku1.netlify.app/" target="_blank" rel="noopener noreferrer">
-                        <strong>Personal Portfolio Website:</strong>
-                    </a>
-                    Developed a personal portfolio website to showcase my skills, projects, and professional background
-                </li>
-                <li>
-                    <a href="https://titansphere.xyz/" target="_blank" rel="noopener noreferrer">
-                        <strong>TitanSphere Studios Website:</strong>
-                    </a>
-                    Designed and developed the official website for TitanSphere Studios, featuring the latest games and
-                    contact information
-                </li>
-                <li>
-                    <a href="https://gamedevariel2026.netlify.app/" target="_blank" rel="noopener noreferrer">
-                        <strong>Unity Game Development Course Website 2026:</strong>
-                    </a>
-                    Designed and developed a website for the 2026 Unity Game Development course, featuring the course information, assigments dashboard and students projects
-                </li>
-            </ul>
-        </div>
-        <!-- Major Contributions -->
-        <div class="project-category">
-            <h2>Major Contributions</h2>
-            <ul>
-                <li>
-                    <a href="https://github.com/networkx/networkx/pull/6364" target="_blank" rel="noopener noreferrer">
-                        <strong>NetworkX Library Contribution (Pull Request #6364):</strong>
-                    </a>
-                    Implemented Coalition Formation in Multi-agent Systems
-                </li>
-                <li>
-                    <a href="https://github.com/VictoKu1/API_Security_Research" target="_blank" rel="noopener noreferrer">
-                        <strong>API Traffic Security Classification:</strong>
-                    </a>
-                    Conducted research for Ariel Cyber Innovation Center Cisco Competition.
-                </li>
-                <li>
-                    <a href="https://github.com/VictoKu1/IndustrialControlSystemCyberAttackDetectingCourse"
-                        target="_blank" rel="noopener noreferrer">
-                        <strong>SCADA Cyber Attacks Detection:</strong>
-                    </a>
-                    Researched industrial power control system security.
-                </li>
-            </ul>
-        </div>
-        <!-- Game Development (Personal Favorites) -->
-        <div class="project-category">
-            <h2>Game Development (Personal Favorites)</h2>
-            <div class="iframe-container">
-                <iframe src="https://itch.io/embed/2863698?border_width=0&amp;bg_color=000000&amp;border_color=000000"
-                    width="206" height="165" loading="lazy" title="SolveIt game embed"></iframe>
-                <iframe src="https://itch.io/embed/2891933?border_width=0&amp;bg_color=000000&amp;border_color=000000"
-                    width="206" height="165" loading="lazy" title="Cuble game embed"></iframe>
-                <iframe src="https://itch.io/embed/1300208?border_width=0&amp;bg_color=000000&amp;border_color=000000"
-                    width="206" height="165" loading="lazy" title="Dimensional game embed"></iframe>
-                <iframe src="https://itch.io/embed/1279655?border_width=0&amp;bg_color=000000&amp;border_color=000000"
-                    width="206" height="165" loading="lazy" title="Jumper game embed"></iframe>
+    <section id="projects" class="section-band">
+        <div class="section-shell">
+            <div class="section-heading">
+                <div>
+                    <p class="section-kicker">Projects</p>
+                    <h2>Selected projects and contributions</h2>
+                </div>
+                <a class="text-link" href="https://github.com/VictoKu1?tab=repositories" target="_blank" rel="noopener noreferrer">
+                    More on GitHub
+                </a>
+            </div>
+
+            <div class="project-grid">
+                <article class="project-card featured">
+                    <div class="project-topline">
+                        <span>Open Source</span>
+                        <i class="fab fa-python"></i>
+                    </div>
+                    <h3><a href="https://github.com/VictoKu1/babylonpiles" target="_blank" rel="noopener noreferrer">BabylonPiles</a></h3>
+                    <p>
+                        Offline first knowledge server for emergency storage, documentation, medical guides, books, and
+                        resilient access to critical resources
+                    </p>
+                </article>
+
+                <article class="project-card">
+                    <div class="project-topline">
+                        <span>AI Platform</span>
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3><a href="https://github.com/VictoKu1/encycloped.ai" target="_blank" rel="noopener noreferrer">encycloped.ai</a></h3>
+                    <p>
+                        Community driven encyclopedia platform using Flask and the ChatGPT API for AI moderated
+                        publishing workflows
+                    </p>
+                </article>
+
+                <article class="project-card">
+                    <div class="project-topline">
+                        <span>Security</span>
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3><a href="https://github.com/VictoKu1/qr_analyzer" target="_blank" rel="noopener noreferrer">QR Analyzer</a></h3>
+                    <p>
+                        Cross-platform Flutter app that analyzes QR codes and uses AI to detect possible security risks.
+                    </p>
+                </article>
+
+                <article class="project-card">
+                    <div class="project-topline">
+                        <span>Research</span>
+                        <i class="fas fa-industry"></i>
+                    </div>
+                    <h3><a href="https://github.com/VictoKu1/IndustrialControlSystemCyberAttackDetectingCourse" target="_blank" rel="noopener noreferrer">SCADA Cyber Attacks Detection</a></h3>
+                    <p>
+                        Researched industrial power control system security
+                    </p>
+                </article>
+            </div>
+
+            <div class="website-showcase">
+                <div class="section-heading compact">
+                    <div>
+                        <p class="section-kicker">Websites</p>
+                        <h2>Web projects with a cleaner spotlight</h2>
+                    </div>
+                </div>
+                <div class="website-grid">
+                    <article class="project-card website-card">
+                        <div class="project-topline">
+                            <span>Portfolio</span>
+                            <i class="fas fa-id-card"></i>
+                        </div>
+                        <h3><a href="https://victoku1.netlify.app/" target="_blank" rel="noopener noreferrer">Personal Portfolio Website</a></h3>
+                        <p>
+                            Personal site for showcasing skills, projects, writing, games, and professional background
+                        </p>
+                    </article>
+
+                    <article class="project-card website-card">
+                        <div class="project-topline">
+                            <span>Studio</span>
+                            <i class="fas fa-gamepad"></i>
+                        </div>
+                        <h3><a href="https://titansphere.xyz/" target="_blank" rel="noopener noreferrer">TitanSphere Studios Website</a></h3>
+                        <p>
+                            Official studio website featuring games, studio information, and contact details
+                        </p>
+                    </article>
+
+                    <article class="project-card website-card">
+                        <div class="project-topline">
+                            <span>Education</span>
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h3><a href="https://gamedevariel2026.netlify.app/" target="_blank" rel="noopener noreferrer">Unity Game Development Course Website 2026</a></h3>
+                        <p>
+                            Course website with class information, assignments dashboard, and student projects
+                        </p>
+                    </article>
+                </div>
+            </div>
+
+            <div class="game-showcase">
+                <div class="section-heading compact">
+                    <div>
+                        <p class="section-kicker">Game Development</p>
+                        <h2>Playable work gets a bigger stage</h2>
+                    </div>
+                </div>
+                <div class="game-grid">
+                    <iframe src="https://itch.io/embed/2863698?border_width=0&amp;bg_color=000000&amp;border_color=000000"
+                        width="206" height="165" loading="lazy" title="SolveIt game embed"></iframe>
+                    <iframe src="https://itch.io/embed/2891933?border_width=0&amp;bg_color=000000&amp;border_color=000000"
+                        width="206" height="165" loading="lazy" title="Cuble game embed"></iframe>
+                    <iframe src="https://itch.io/embed/1300208?border_width=0&amp;bg_color=000000&amp;border_color=000000"
+                        width="206" height="165" loading="lazy" title="Dimensional game embed"></iframe>
+                    <iframe src="https://itch.io/embed/1279655?border_width=0&amp;bg_color=000000&amp;border_color=000000"
+                        width="206" height="165" loading="lazy" title="Jumper game embed"></iframe>
+                </div>
             </div>
         </div>
-        <!-- Other Projects -->
-        <div class="project-category">
-            <h2>Other Projects</h2>
-            <ul>
-                <li>
-                    <strong>Governmental Coalition Calculation System:</strong>
-                    <a href="https://github.com/FairCoalitionCasesDistributionProject" target="_blank"
-                        rel="noopener noreferrer">[GitHub]</a>
-                </li>
-                <li>
-                    <strong>MINIMAP Android App:</strong>
-                    A location-based social security network.
-                    <a href="https://github.com/V-P-A-AppDev/MINIMAP" target="_blank" rel="noopener noreferrer">[GitHub]</a>
-                </li>
-                <li>
-                    <strong>Evil Twin Attack and Defense in Python:</strong>
-                    <a href="https://github.com/Wireless-Network-Security/Evil-Twin" target="_blank"
-                        rel="noopener noreferrer">[GitHub]</a>
-                </li>
-                <li>
-                    <strong>Python Pip Packages Update Script in Linux:</strong>
-                    <a href="https://github.com/VictoKu1/PythonPipPackagesUpdateScript" target="_blank"
-                        rel="noopener noreferrer">[GitHub]</a>
-                </li>
-                <li>
-                    <strong>Many Other Projects.....:</strong>
-                    <a href="https://github.com/VictoKu1?tab=repositories" target="_blank" rel="noopener noreferrer">[GitHub]</a>
-                </li>
-            </ul>
+    </section>
+
+    <section id="articles" class="section-band alt">
+        <div class="section-shell">
+            <p class="section-kicker">Articles</p>
+            <h2>Writing and technical notes</h2>
+            <div id="medium-articles" class="articles-grid">
+                <div class="article-loading">Loading articles.....</div>
+            </div>
         </div>
     </section>
 
-    <!-- Articles Section -->
-    <section id="articles">
-        <h1>Articles</h1>
-        <br>
-        <div id="medium-articles" class="articles-grid"></div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact">
-        <h1>Contact Me</h1>
-        <h5>Feel free to reach out for collaborations or just to say hi!</h5>
-        <div class="contact-icons">
-            <a href="mailto:victoku1.info@gmail.com" title="Email">
-                <i class="fas fa-envelope"></i>
-            </a>
-            <a href="https://github.com/VictoKu1" target="_blank" rel="noopener noreferrer" title="GitHub">
-                <i class="fab fa-github"></i>
-            </a>
-            <a href="https://linkedin.com/in/victoku1" target="_blank" rel="noopener noreferrer" title="LinkedIn">
-                <i class="fab fa-linkedin"></i>
-            </a>
-        </div>
-        <div class="author">
-            Designed and Built by <a href="/">VictoKu1</a>
+    <section id="contact" class="contact-band">
+        <div class="section-shell contact-layout">
+            <div>
+                <p class="section-kicker">Contact</p>
+                <h2>Have a project, collaboration, or game idea?</h2>
+            </div>
+            <div class="contact-actions">
+                <a href="mailto:victoku1.info@gmail.com" title="Email">
+                    <i class="fas fa-envelope"></i>
+                    <span>Email</span>
+                </a>
+                <a href="https://github.com/VictoKu1" target="_blank" rel="noopener noreferrer" title="GitHub">
+                    <i class="fab fa-github"></i>
+                    <span>GitHub</span>
+                </a>
+                <a href="https://linkedin.com/in/victoku1" target="_blank" rel="noopener noreferrer" title="LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                    <span>LinkedIn</span>
+                </a>
+            </div>
         </div>
     </section>
 </body>

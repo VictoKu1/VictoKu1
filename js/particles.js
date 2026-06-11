@@ -126,7 +126,7 @@ class Particle {
   draw(highlighted = false) {
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-    ctx.fillStyle = highlighted ? "#ffffff" : "rgba(0, 170, 255, 0.5)";
+    ctx.fillStyle = highlighted ? "#ffffff" : "rgba(0, 190, 255, 0.72)";
     ctx.fill();
   }
 
@@ -551,8 +551,8 @@ function connectParticles(highlightedParticles) {
           }
           
           ctx.strokeStyle = isHighlighted
-            ? "rgba(255, 255, 255, 0.3)"
-            : "rgba(0, 170, 255, 0.1)";
+            ? "rgba(255, 255, 255, 0.42)"
+            : "rgba(0, 190, 255, 0.18)";
           ctx.beginPath();
           ctx.moveTo(pA.x, pA.y);
           ctx.lineTo(pB.x, pB.y);
