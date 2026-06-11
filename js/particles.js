@@ -40,6 +40,16 @@ const COLLISION_DAMPING = 0.98; // Velocity damping after collision to prevent i
 
 // Cached bounding rectangle for the canvas element
 let canvasRect = null;
+let canvasScale = window.devicePixelRatio || 1;
+
+function isMobileViewport() {
+  return window.innerWidth <= 768;
+}
+
+function getCanvasScale() {
+  const deviceScale = window.devicePixelRatio || 1;
+  return Math.min(deviceScale, isMobileViewport() ? 1.35 : 2);
+}
 
 // Add touch interaction state variables
 let touchStartTime = 0;
@@ -47,7 +57,7 @@ let touchStartX = 0;
 let touchStartY = 0;
 let touchHoldTimer = null;
 let isTouchHolding = false;
-const TOUCH_HOLD_DURATION = 1500; // 1.5 seconds in milliseconds
+const TOUCH_HOLD_DURATION = 450; // milliseconds
 const TOUCH_MOVE_THRESHOLD = 10; // pixels - if touch moves more than this, cancel hold
 
 // Edge scrolling variables
@@ -68,15 +78,33 @@ const SCROLL_SPEED = 4; // pixels per scroll event (increased from 2)
 function resizeCanvas() {
   const homeSection = document.getElementById("home");
   const rect = homeSection.getBoundingClientRect();
-  const scale = window.devicePixelRatio || 1;
+  const scale = getCanvasScale();
+  canvasScale = scale;
 
   canvas.width = rect.width * scale;
   canvas.height = rect.height * scale;
   canvas.style.width = `${rect.width}px`;
   canvas.style.height = `${rect.height}px`;
+  mouse.radius = getScaledCanvasValue(isMobileViewport() ? 155 : 150);
+  ctx.lineWidth = getScaledCanvasValue(isMobileViewport() ? 0.9 : 1);
+  ctx.lineCap = "round";
 
   // Update cached bounding rectangle
   canvasRect = canvas.getBoundingClientRect();
+}
+
+function getScaledCanvasValue(value) {
+  return value * canvasScale;
+}
+
+function getParticleSize() {
+  const minSize = isMobileViewport() ? 1.45 : 1;
+  const range = isMobileViewport() ? 1.5 : 3;
+  return getScaledCanvasValue(Math.random() * range + minSize);
+}
+
+function getParticleSpeed() {
+  return getScaledCanvasValue(isMobileViewport() ? 0.38 : 0.45);
 }
 
 // Update canvasRect on scroll so that mouse/touch events remain accurate
@@ -207,28 +235,29 @@ class Particle {
     this.prevY = this.y;
 
     if (this.isOrbiting && mouse.gravityCenter) {
+      const maxOrbitRadius = getScaledCanvasValue(MAX_ORBIT_RADIUS);
       // --- Orbiting Physics ---
       // Calculate vector from particle to gravity center
       const dx = mouse.gravityCenter.x - this.x;
       const dy = mouse.gravityCenter.y - this.y;
       const currentDistance = Math.sqrt(dx * dx + dy * dy);
 
+      // Escape orbit if too far
+      if (this.initialOrbitRadius > maxOrbitRadius) {
+        this.escapeOrbit();
+        return;
+      }
+
       // Update gravity strength based on initial distance
       this.gravityStrength = Math.pow(
-        1 - this.initialOrbitRadius / MAX_ORBIT_RADIUS,
+        1 - this.initialOrbitRadius / maxOrbitRadius,
         GRAVITY_FALLOFF
       );
 
       // Calculate speed multiplier based on distance (closer = faster)
-      const distanceRatio = 1 - this.initialOrbitRadius / MAX_ORBIT_RADIUS;
+      const distanceRatio = 1 - this.initialOrbitRadius / maxOrbitRadius;
       this.speedMultiplier =
         1 + (SPEED_MULTIPLIER - 1) * Math.pow(distanceRatio, 2);
-
-      // Escape orbit if too far
-      if (this.initialOrbitRadius > MAX_ORBIT_RADIUS) {
-        this.escapeOrbit();
-        return;
-      }
 
       // Calculate escape velocity
       const escapeVelocity = Math.sqrt(
@@ -245,7 +274,7 @@ class Particle {
       // Update orbital speed (Kepler's law)
       const distanceFactor = Math.max(
         0.2,
-        1 - this.initialOrbitRadius / MAX_ORBIT_RADIUS
+        1 - this.initialOrbitRadius / maxOrbitRadius
       );
       this.orbitSpeed =
         Math.sqrt(
@@ -328,29 +357,38 @@ class Particle {
    */
   startOrbit(centerX, centerY) {
     if (!this.isOrbiting) {
-      this.isOrbiting = true;
-      this.originalDx = this.dx;
-      this.originalDy = this.dy;
-      this.lastUpdateTime = performance.now();
-
       // Calculate initial distance and angle from center
       const dx = this.x - centerX;
       const dy = this.y - centerY;
       this.initialOrbitRadius = Math.sqrt(dx * dx + dy * dy);
       this.orbitRadius = this.initialOrbitRadius;
       this.orbitAngle = Math.atan2(dy, dx);
+      const maxOrbitRadius = getScaledCanvasValue(MAX_ORBIT_RADIUS);
+      if (this.initialOrbitRadius > maxOrbitRadius) {
+        return;
+      }
+      this.initialOrbitRadius = Math.max(
+        this.initialOrbitRadius,
+        getScaledCanvasValue(MIN_ORBIT_RADIUS)
+      );
+      this.orbitRadius = this.initialOrbitRadius;
+
+      this.isOrbiting = true;
+      this.originalDx = this.dx;
+      this.originalDy = this.dy;
+      this.lastUpdateTime = performance.now();
 
       // Set up gravity and speed multipliers
       this.gravityStrength = Math.pow(
-        1 - this.initialOrbitRadius / MAX_ORBIT_RADIUS,
+        1 - this.initialOrbitRadius / maxOrbitRadius,
         GRAVITY_FALLOFF
       );
-      const distanceRatio = 1 - this.initialOrbitRadius / MAX_ORBIT_RADIUS;
+      const distanceRatio = 1 - this.initialOrbitRadius / maxOrbitRadius;
       this.speedMultiplier =
         1 + (SPEED_MULTIPLIER - 1) * Math.pow(distanceRatio, 2);
       const distanceFactor = Math.max(
         0.2,
-        1 - this.initialOrbitRadius / MAX_ORBIT_RADIUS
+        1 - this.initialOrbitRadius / maxOrbitRadius
       );
       this.orbitSpeed =
         Math.sqrt(
@@ -433,11 +471,11 @@ function getAdaptiveParticleCount() {
 
   let base = 265;
   if (window.innerWidth <= 480) {
-    base = 120;
+    base = 75;
   } else if (window.innerWidth <= 768) {
-    base = 170;
+    base = 105;
   } else if (window.innerWidth <= 1024) {
-    base = 220;
+    base = 190;
   }
 
   const cores = navigator.hardwareConcurrency || 4;
@@ -449,7 +487,7 @@ function getAdaptiveParticleCount() {
     base = Math.floor(base * 0.8);
   }
 
-  return Math.max(80, base);
+  return Math.max(isMobileViewport() ? 45 : 80, base);
 }
 
 /**
@@ -461,11 +499,12 @@ function initParticles() {
   particles.length = 0;
   const particleCount = getAdaptiveParticleCount();
   for (let i = 0; i < particleCount; i++) {
-    const size = Math.random() * 3 + 1;
+    const size = getParticleSize();
     const x = Math.random() * canvas.width;
     const y = Math.random() * canvas.height;
-    const dx = Math.random() * 1 - 0.5;
-    const dy = Math.random() * 1 - 0.5;
+    const speed = getParticleSpeed();
+    const dx = (Math.random() * 2 - 1) * speed;
+    const dy = (Math.random() * 2 - 1) * speed;
     particles.push(new Particle(x, y, dx, dy, size));
   }
 }
@@ -477,7 +516,8 @@ function initParticles() {
  * @param {Array} highlightedParticles - Array of particles near the mouse.
  */
 function connectParticles(highlightedParticles) {
-  const maxDistance = 120;
+  const isMobile = isMobileViewport();
+  const maxDistance = getScaledCanvasValue(isMobile ? 95 : 120);
   const maxDistanceSquared = maxDistance * maxDistance;
   const cellSize = maxDistance;
   const grid = new Map(); // Use Map for better performance
@@ -551,8 +591,8 @@ function connectParticles(highlightedParticles) {
           }
           
           ctx.strokeStyle = isHighlighted
-            ? "rgba(255, 255, 255, 0.42)"
-            : "rgba(0, 190, 255, 0.18)";
+            ? "rgba(255, 255, 255, 0.34)"
+            : `rgba(0, 190, 255, ${isMobile ? 0.13 : 0.18})`;
           ctx.beginPath();
           ctx.moveTo(pA.x, pA.y);
           ctx.lineTo(pB.x, pB.y);
@@ -624,7 +664,9 @@ function getHighlightedParticles() {
  * Reduced grid cell size and improved early exit conditions.
  */
 function checkParticleCollisions() {
-  const maxCollisionDistance = 16; // Reduced from 20 for better performance
+  if (isMobileViewport()) return;
+
+  const maxCollisionDistance = getScaledCanvasValue(16);
   const cellSize = maxCollisionDistance;
   const grid = new Map(); // Use Map instead of object for better performance
   const len = particles.length;

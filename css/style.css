@@ -573,15 +573,70 @@ section {
 .game-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: stretch;
   gap: 16px;
 }
 
-.game-grid iframe {
-  width: 100%;
-  min-height: 188px;
+.game-card {
+  display: flex;
+  flex-direction: column;
   border: 1px solid var(--line);
   border-radius: 8px;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgb(16 24 39 / 92%), rgb(11 18 32 / 92%));
+  box-shadow: 0 12px 34px rgb(0 0 0 / 24%);
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.game-card:hover {
+  transform: translateY(-5px);
+  border-color: rgb(34 211 238 / 45%);
+  box-shadow: 0 18px 44px rgb(0 0 0 / 32%);
+}
+
+.game-thumb {
+  display: block;
+  aspect-ratio: 360 / 286;
+  border-bottom: 1px solid var(--line);
   background: #000;
+  overflow: hidden;
+}
+
+.game-thumb img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.game-card-body {
+  padding: 14px 16px 16px;
+}
+
+.game-card h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.25;
+}
+
+.game-card h3 a {
+  color: var(--text);
+  text-decoration: none;
+  transition: color 180ms ease;
+}
+
+.game-card h3 a:hover,
+.game-card h3 a:focus-visible {
+  color: var(--cyan);
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+
+.game-card p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.45;
 }
 
 .articles-grid {
@@ -938,11 +993,59 @@ section {
     flex-direction: column;
   }
 
+  .contact-layout {
+    align-items: center;
+    text-align: center;
+  }
+
+  .contact-actions {
+    margin-right: auto;
+    margin-left: auto;
+  }
+
   .project-grid,
-  .website-grid,
-  .game-grid,
-  .articles-grid {
+  .website-grid {
     grid-template-columns: 1fr;
+  }
+
+  .articles-grid {
+    grid-template-columns: minmax(0, min(76vw, 340px));
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .article-image-wrapper {
+    aspect-ratio: 16 / 9;
+  }
+
+  .article-content {
+    padding: 10px 11px 12px;
+  }
+
+  .article-desc,
+  .article-loading,
+  .article-error {
+    font-size: 0.76rem;
+    line-height: 1.35;
+  }
+
+  .game-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .game-card-body {
+    padding: 10px 11px 12px;
+  }
+
+  .game-card h3 {
+    font-size: 0.92rem;
+  }
+
+  .game-card p {
+    margin-top: 3px;
+    font-size: 0.76rem;
+    line-height: 1.35;
   }
 }
 
@@ -967,5 +1070,22 @@ section {
     max-width: 100%;
     margin-right: auto;
     margin-left: auto;
+  }
+
+  .game-grid {
+    gap: 10px;
+  }
+
+  .articles-grid {
+    grid-template-columns: minmax(0, min(78vw, 300px));
+    gap: 14px;
+  }
+
+  .article-content {
+    padding: 9px 10px 10px;
+  }
+
+  .game-card-body {
+    padding: 9px 10px 10px;
   }
 }
